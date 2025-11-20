@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import AvatarFallback from '@/components/common/AvatarFallback';
 
 interface AvatarProps {
   profileImgUrl: string | null;
@@ -21,10 +22,8 @@ export default function Avatar({ profileImgUrl, userName, userId, size }: Avatar
           alt={`${userName}님의 프로필`}
         />
       ) : (
-        <div>AvatarFallback{userId}</div>
+        <AvatarFallback id={userId} nickname={userName} />
       )}
     </div>
   );
 }
-
-//TODO: 프로필 이미지가 없을 경우의 프로필 컴포넌트 구현 필요 (AvatarFallback)
