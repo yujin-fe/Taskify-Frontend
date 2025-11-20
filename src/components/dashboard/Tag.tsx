@@ -1,5 +1,5 @@
 import { cva } from 'class-variance-authority';
-import type { ColorType } from '@/types/ui';
+import type { ColorTypes } from '@/constants/color';
 
 const tagStyles = cva(
   'inline-block px-1.5 py-1 rounded-sm font-xs-regular sm:py-0.5 sm:font-md-regular',
@@ -18,7 +18,7 @@ const tagStyles = cva(
 
 interface TagProps {
   children: React.ReactNode;
-  color: ColorType;
+  color: ColorTypes;
 }
 
 /**
