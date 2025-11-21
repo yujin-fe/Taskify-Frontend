@@ -3,3 +3,7 @@
 @import './base/fonts.css';
 @import './base/colors.css';
 @import './base/font-utilities.css';
+
+li {
+  list-style: none;
+}
