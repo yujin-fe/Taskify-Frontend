@@ -1,3 +1,11 @@
+import HomeTopArea from '@/components/home/HomeTopArea';
+
 export default function Home() {
-  return <div>메인 페이지~</div>;
+  return (
+    <div className='bg-gray-900 px-4'>
+      <main className='pt-[94px]'>
+        <HomeTopArea />
+      </main>
+    </div>
+  );
 }
