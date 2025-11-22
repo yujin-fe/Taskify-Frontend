@@ -4,11 +4,12 @@ import { cn } from '@/utils/cn';
 
 const ButtonStyle = cva(
   `bg-gray-0 rounded-lg flex items-center justify-center border-[1px] border-solid border-gray-300 
-  cursor-pointer disabled:bg-gray-400 disabled:border-none disabled:cursor-default`,
+  cursor-pointer disabled:bg-gray-400 disabled:border-none disabled:cursor-default 
+  hover:bg-gray-100 hover:border-gray-400`,
   {
     variants: {
       theme: {
-        primary: 'bg-primary text-gray-0 border-none',
+        primary: 'bg-primary text-gray-0 border-none hover:bg-purple-500',
         secondary: 'text-primary',
         outlined: 'text-gray-500',
         icon: 'text-gray-500',
@@ -80,4 +81,3 @@ export default function Button<T extends React.ElementType = 'button'>({
   };
   return <Component {...componentProps}>{children}</Component>;
 }
-//TODO: hover 디자인 반영
