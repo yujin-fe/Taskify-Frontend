@@ -1,13 +1,18 @@
 import { useState } from 'react';
 
-const useDropdownMenu = () => {
+interface useDropdownMenuProps {
+  value?: string;
+  onValueChange?: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const useDropdownMenu = ({ value, onValueChange }: useDropdownMenuProps = {}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleToggleOpen = () => {
     setIsOpen((prev) => !prev);
   };
 
-  return { isOpen, handleToggleOpen };
+  return { isOpen, handleToggleOpen, value, onValueChange };
 };
 
 export default useDropdownMenu;
