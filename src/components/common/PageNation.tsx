@@ -44,7 +44,7 @@ type PageNationProps = {
   className?: string;
 };
 
-export function PageNation({
+export default function PageNation({
   onPrev,
   onNext,
   prevDisabled = false,
@@ -52,7 +52,7 @@ export function PageNation({
   className,
 }: PageNationProps) {
   return (
-    <div className={cn('mt-8 flex h-10 w-20 items-center justify-between', className)}>
+    <div className={cn('flex h-10 w-20 items-center justify-between', className)}>
       <NavigationButton
         onClick={onPrev}
         direction='prev'
