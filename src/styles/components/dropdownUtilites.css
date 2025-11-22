@@ -1,0 +1,3 @@
+@utility dropdown-menu-item-base {
+  @apply cursor-pointer rounded-sm px-4 text-gray-700 select-none;
+}
