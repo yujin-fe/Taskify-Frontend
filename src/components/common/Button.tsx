@@ -52,11 +52,13 @@ type AsProps<T extends React.ElementType> = ButtonProps<T>
  *  예외는 className에 적용해주세요
  *
  *  as={Link}는 to={'경로'}와 같이 사용해주세요
- *
+ *  폼 제출하는 타입의 버튼은 type="submit"을 명시해주세요
  * @example
- * <Button theme ="primay" size="lg" disabled={false} className="h-[62px]">
+ * <Button theme="primary" size="lg" type="submit" className="h-[62px]">
  *   버튼
  * </Button>
+ *
+ * 가이드 노션 링크: https://www.notion.so/ahahahahreum/2af5213dcd4c80c58445d9438784da50?source=copy_link
  */
 
 export default function Button<T extends React.ElementType = 'button'>({
@@ -64,7 +66,7 @@ export default function Button<T extends React.ElementType = 'button'>({
   children,
   theme,
   size,
-  type = 'submit',
+  type = 'button',
   disabled = false,
   className,
   onClick,
