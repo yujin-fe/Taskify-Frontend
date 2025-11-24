@@ -3,7 +3,7 @@ import FormModalBody from '@/components/common/modal/FormModalBody';
 import FormModalFooter from '@/components/common/modal/FormModalFooter';
 import FormModalTitle from '@/components/common/modal/FormModalTitle';
 import ModalPortal from '@/components/common/modal/ModalPortal';
-import { FormModalContext } from '@/context/FormModalContext';
+import { FormModalContext } from '@/context/formModalContext';
 import { cn } from '@/utils/cn';
 
 const FormModalFrameStyle = cva(`flex flex-col bg-gray-0 rounded-2xl`, {
