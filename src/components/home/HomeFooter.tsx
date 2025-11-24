@@ -2,7 +2,7 @@ import Icons from '@/assets/icons';
 
 export default function HomeFooter() {
   return (
-    <footer className='flex w-full max-w-[1640px] flex-col items-center justify-between gap-[12px] pt-[50px] pb-[100px] text-gray-400 md:h-[100px] md:flex-row md:p-0'>
+    <footer className='mx-auto flex w-full max-w-[1640px] flex-col items-center justify-between gap-[12px] pt-[50px] pb-[100px] text-gray-400 md:h-[100px] md:flex-row md:p-0'>
       <span>©FE 19기 7팀 - 2025</span>
       <div className='flex gap-[16px] md:gap-[24px] lg:gap-[40px]'>
         <a
