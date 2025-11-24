@@ -6,9 +6,41 @@ type ImageUploadProps = {
   size?: 'Small' | 'Large';
   file?: File | null; // 부모에서 관리하는 상태
   onFileChange?: (file: File | null) => void;
+  edit?: boolean;
 };
 
-export default function ImageUpload({ size = 'Small', onFileChange, file }: ImageUploadProps) {
+/**
+ * ImageUpload 컴포넌트
+ *
+ * 파일 선택 시 미리보기를 보여주고, 삭제 기능도 포함되어 있습니다.
+ * edit=true일 경우, 이미지 위에 검정 반투명 오버레이 + 연필 아이콘 표시
+ *
+ * @example
+ * // 기본 Small 이미지 업로드 폼
+ * <ImageUpload
+ *   size="Small"
+ *   file={imageFile}
+ *   onFileChange={setImageFile}
+ *   edit={false}
+ * />
+ *
+ * @example
+ * // Small 이미지 업로드 + edit 모드
+ * <ImageUpload
+ *   size="Small"
+ *   file={imageFile}
+ *   onFileChange={setImageFile}
+ *   edit={true}
+ * />
+ *
+ */
+
+export default function ImageUpload({
+  size = 'Small',
+  onFileChange,
+  file,
+  edit = false,
+}: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const preview = useMemo(() => {
     return file ? URL.createObjectURL(file) : null;
@@ -49,6 +81,7 @@ export default function ImageUpload({ size = 'Small', onFileChange, file }: Imag
     <div className='relative inline-block h-fit w-fit'>
       <button
         className={cn(
+          'relative',
           'flex cursor-pointer items-center justify-center overflow-hidden rounded-md bg-gray-200',
           size === 'Small' && 'h-[58px] w-[58px] sm:h-[76px] sm:w-[76px]',
           size === 'Large' && 'h-[100px] w-[100px] sm:h-[182px] sm:w-[182px]'
@@ -61,6 +94,12 @@ export default function ImageUpload({ size = 'Small', onFileChange, file }: Imag
           backgroundPosition: 'center',
         }}>
         {!preview && <Icons.Plus className='h-7 w-7 text-violet-500' />}
+
+        {preview && edit && (
+          <div className='absolute inset-0 flex items-center justify-center rounded-md bg-gray-900/60'>
+            <Icons.Pencil className='h-[22px] w-[22px] text-gray-0 sm:h-[30px] sm:w-[30px]' />
+          </div>
+        )}
       </button>
 
       {preview && (
