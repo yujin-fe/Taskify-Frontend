@@ -13,9 +13,9 @@ import Pencil from '@/assets/icons/dashboard/ic-pencil.svg';
 import Plus from '@/assets/icons/dashboard/ic-plus.svg';
 import Search from '@/assets/icons/dashboard/ic-search.svg';
 import Setting from '@/assets/icons/dashboard/ic-setting.svg';
-import Email from '@/assets/icons/home/ic-email.svg';
-import Facebook from '@/assets/icons/home/ic-facebook.svg';
-import Instagram from '@/assets/icons/home/ic-instagram.svg';
+import Github from '@/assets/icons/home/ic-github.svg';
+import Notion from '@/assets/icons/home/ic-notion.svg';
+import Youtube from '@/assets/icons/home/ic-youtube.svg';
 
 export default {
   PasswordHidden,
@@ -33,7 +33,7 @@ export default {
   Plus,
   Search,
   Setting,
-  Email,
-  Facebook,
-  Instagram,
+  Github,
+  Notion,
+  Youtube,
 };
