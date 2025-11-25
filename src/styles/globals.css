@@ -10,6 +10,10 @@ li {
   list-style: none;
 }
 
+body.modal-open {
+  overflow: hidden;
+}
+
 /* input datetime-local 제어 */
 input[type='datetime-local']::-webkit-calendar-picker-indicator {
   position: absolute;

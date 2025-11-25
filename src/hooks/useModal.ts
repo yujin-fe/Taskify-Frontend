@@ -1,15 +1,35 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { useSearchParams } from 'react-router';
 
-export const useModal = () => {
-  const [isOpen, setIsOpen] = useState(false);
+export const useModal = (modalName: string) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const isOpen = searchParams.get(modalName) === 'true';
+
+  useEffect(() => {
+    const hasAnyModalOpen = Array.from(searchParams.values()).some((value) => value === 'true');
+    if (hasAnyModalOpen) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+    return () => {
+      document.body.classList.remove('modal-open');
+    };
+  }, [isOpen]);
 
   const handleModalOpen = () => {
-    setIsOpen(true);
+    setSearchParams((prev) => {
+      prev.set(modalName, 'true');
+      return prev;
+    });
   };
 
   const handleModalClose = () => {
-    setIsOpen(false);
+    setSearchParams((prev) => {
+      prev.delete(modalName);
+      return prev;
+    });
   };
 
-  return { isOpen, handleModalOpen, handleModalClose };
+  return { modalName, isOpen, handleModalOpen, handleModalClose };
 };

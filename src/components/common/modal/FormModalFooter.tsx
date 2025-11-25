@@ -1,27 +1,16 @@
-import { useContext } from 'react';
-import Button from '@/components/common/Button';
-import { FormModalContext } from '@/context/formModalContext';
+import { cn } from '@/utils/cn';
+
 export default function FormModalFooter({
-  cancleButton,
-  submitButton,
+  children,
+  className,
 }: {
-  cancleButton: string;
-  submitButton: string;
+  children: React.ReactNode;
+  className?: string;
 }) {
-  const { handleModalClose } = useContext(FormModalContext);
   return (
-    <div className={'flex w-[295px] max-sm:gap-[7px] sm:w-[520px] sm:gap-2'}>
-      <Button
-        size='lg'
-        theme={'outlined'}
-        onClick={() => {
-          handleModalClose();
-        }}>
-        {cancleButton}
-      </Button>
-      <Button size='lg' theme={'primary'} type='submit'>
-        {submitButton}
-      </Button>
+    <div
+      className={cn('flex w-full max-w-[520px] gap-[7px] pt-6 sm:w-[520px] sm:gap-2', className)}>
+      {children}
     </div>
   );
 }

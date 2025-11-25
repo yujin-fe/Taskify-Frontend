@@ -5,6 +5,7 @@ interface FormModalContextType {
   isOpen: boolean;
   handleModalOpen: () => void;
   handleModalClose: () => void;
+  closeBtn: boolean;
 }
 
 export const FormModalContext = createContext({} as FormModalContextType);
