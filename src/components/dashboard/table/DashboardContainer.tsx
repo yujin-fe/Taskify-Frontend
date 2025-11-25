@@ -1,6 +1,5 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 
-
 const DashboardContainerStyles = cva('w-full rounded-md bg-gray-0', {
   variants: {
     type: {
