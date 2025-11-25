@@ -4,6 +4,7 @@ import InputField from '@/components/common/input/InputField';
 import InputFieldDate from '@/components/common/input/InputFieldDate';
 import InputGroup from '@/components/common/input/InputGroup';
 import InputLabel from '@/components/common/input/InputLabel';
+import InputPrefixIcon from '@/components/common/input/InputPrefixIcon';
 import InputSuffixButton from '@/components/common/input/InputSuffixButton';
 import { InputContext } from '@/context/inputContext';
 
@@ -94,6 +95,19 @@ Input.Field = InputField;
  * <Input.FieldDate placeholder="마감일을 선택해주세요" />
  */
 Input.FieldDate = InputFieldDate;
+
+/**
+ * InputPrefixIcon 컴포넌트
+ *
+ * InputField 좌측에 위치하는 아이콘 컴포넌트입니다.
+ * 예: 검색 아이콘
+ *
+ * @example
+ * <Input.PrefixIcon>
+ *   <Icons.Search />
+ * </Input.PrefixIcon>
+ */
+Input.PrefixIcon = InputPrefixIcon;
 
 /**
  * InputSuffixButton 컴포넌트
