@@ -51,7 +51,7 @@ export default function SideBar({
     console.log('이전페이지로 이동');
   };
   return (
-    <div
+    <aside
       className={cn(
         'fixed top-0 left-0 flex h-screen flex-col bg-gray-0 px-2 py-5',
         isCollapsed ? 'w-[67px] items-center gap-3.5' : 'w-[300px] gap-14'
@@ -96,6 +96,6 @@ export default function SideBar({
         </div>
         {!isCollapsed && <PageNation onPrev={onPrev} onNext={onNext} />}
       </div>
-    </div>
+    </aside>
   );
 }

@@ -3,6 +3,7 @@ import AuthLayout from '@/pages/AuthLayout';
 import DashboardDetail from '@/pages/DashboardDetail';
 import DashboardEdit from '@/pages/DashboardEdit';
 import Home from '@/pages/Home';
+import Layout from '@/pages/Layout';
 import Login from '@/pages/Login';
 import MyDashboard from '@/pages/MyDashboard';
 import Mypage from '@/pages/Mypage';
@@ -18,7 +19,7 @@ export default function Router() {
           <Route path='/signup' element={<Signup />} />
         </Route>
         {/* 레이아웃 컴포넌트 연결 */}
-        <Route>
+        <Route element={<Layout />}>
           <Route path='/mydashboard' element={<MyDashboard />} />
           <Route path='/dashboard/:dashboardId' element={<DashboardDetail />} />
           <Route path='/dashboard/:dashboardId/edit' element={<DashboardEdit />} />

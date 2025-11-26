@@ -56,7 +56,7 @@ export default function DashboardName({
   isCollapsed,
 }: DashboardNameProps) {
   const params = useParams();
-  const isCurrent = params.id === dashboardId;
+  const isCurrent = params.dashboardId === dashboardId;
   return (
     <li>
       <Link
