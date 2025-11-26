@@ -26,4 +26,9 @@
   --color-base: var(--color-gray-100);
 
   --color-crown: #fdd446;
+  --color-profile-orange: #f5b255;
+  --color-profile-blue: #8eafe8;
+  --color-profile-green: #98c776;
+  --color-profile-pink: #de92e8;
+  --color-profile-purple: #8054dc;
 }
