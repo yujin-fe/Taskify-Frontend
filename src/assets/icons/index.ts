@@ -13,10 +13,10 @@ import Pencil from '@/assets/icons/dashboard/ic-pencil.svg';
 import Plus from '@/assets/icons/dashboard/ic-plus.svg';
 import Search from '@/assets/icons/dashboard/ic-search.svg';
 import Setting from '@/assets/icons/dashboard/ic-setting.svg';
+import Sidebar from '@/assets/icons/dashboard/ic-sidebar.svg';
 import Github from '@/assets/icons/home/ic-github.svg';
 import Notion from '@/assets/icons/home/ic-notion.svg';
 import Youtube from '@/assets/icons/home/ic-youtube.svg';
-
 export default {
   PasswordHidden,
   PasswordShow,
@@ -36,4 +36,5 @@ export default {
   Github,
   Notion,
   Youtube,
+  Sidebar,
 };

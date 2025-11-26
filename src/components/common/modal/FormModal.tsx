@@ -96,7 +96,6 @@ export default function FormModal({
   );
 }
 
-// FormModal.Trigger = FormModalTrigger;
 //title 프롭스로 모달의 타이틀 작성
 FormModal.Title = FormModalTitle;
 
