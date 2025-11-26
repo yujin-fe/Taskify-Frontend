@@ -44,6 +44,7 @@ const useAuthForm = <InitT extends Record<string, string>>(initialValue: InitT) 
   return {
     error,
     authForm,
+    setAuthForm,
     disabled,
     showPassword,
     handleShowPasswordToggle,

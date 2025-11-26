@@ -1,10 +1,17 @@
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 import Icons from '@/assets/icons';
 import AuthForm from '@/components/auth/AuthForm';
 import AuthIntro from '@/components/auth/AuthIntro';
 import AuthSuggestion from '@/components/auth/AuthSuggestion';
 import Button from '@/components/common/Button';
 import Input from '@/components/common/input/Input';
+import BaseModalFrame from '@/components/common/modal/BaseModalFrame';
+import useAuthContext from '@/hooks/useAuthContext';
 import useAuthForm from '@/hooks/useAuthForm';
+import useBaseModal from '@/hooks/useBaseModal';
+import { requestLogin } from '@/lib/apis/auth';
 
 type LoginFormType = 'email' | 'password';
 
@@ -16,6 +23,7 @@ const loginInitialValue: Record<LoginFormType, string> = {
 export default function Login() {
   const {
     authForm,
+    setAuthForm,
     handleChange,
     showPassword,
     handleShowPasswordToggle,
@@ -23,11 +31,33 @@ export default function Login() {
     error,
     disabled,
   } = useAuthForm(loginInitialValue);
+  const { isLoggedIn, login } = useAuthContext();
+  const { isOpen, handleModalClose, handleModalOpen } = useBaseModal();
+  const [apiErrorMsg, setApiErrorMsg] = useState('');
+  const navigate = useNavigate();
 
-  const handleSubmit = () => {
-    // TODO: 로그인 API 연결 + API 에러 처리
-    console.log('로그인!');
-    console.log(authForm.email, authForm.password);
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/mydashboard');
+    }
+  }, []);
+
+  const handleSubmit = async () => {
+    // TODO: useMutation 훅 구현 시 적용하기
+    const formData = { email: authForm.email, password: authForm.password };
+    try {
+      const data = await requestLogin(formData);
+      login(data.accessToken);
+      navigate('/mydashboard', { replace: true });
+      setAuthForm(loginInitialValue);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        setApiErrorMsg(error.response?.data?.message ?? '오류가 발생했습니다.');
+        handleModalOpen();
+      }
+    } finally {
+      setAuthForm((prev) => ({ ...prev, password: '' }));
+    }
   };
 
   return (
@@ -76,6 +106,9 @@ export default function Login() {
         </Button>
       </AuthForm>
       <AuthSuggestion message='회원이 아니신가요?' to='/signup' linkText='회원가입하기' />
+      {isOpen && (
+        <BaseModalFrame setOnModal={() => handleModalClose()}>{apiErrorMsg}</BaseModalFrame>
+      )}
     </>
   );
 }
