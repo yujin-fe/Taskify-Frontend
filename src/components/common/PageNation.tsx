@@ -1,8 +1,11 @@
 import Icons from '@/assets/icons';
 import { cn } from '@/utils/cn';
 
-const baseButtonStyle =
-  'flex h-10 w-10 items-center justify-center border text-gray-300 transition-colors hover:border-gray-300 hover:bg-violet-500/10 hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-300 disabled:hover:bg-transparent';
+const baseButtonStyle = `
+  flex h-10 w-10 items-center justify-center border
+  text-gray-300 transition-colors
+  disabled:opacity-50 disabled:cursor-not-allowed
+`;
 
 type NavigationButtonProps = {
   onClick: () => void;
@@ -29,9 +32,14 @@ export function NavigationButton({
       type='button'
       onClick={onClick}
       disabled={disabled}
-      className={cn(baseButtonStyle, borderRadiusClass)}
+      className={cn(
+        baseButtonStyle,
+        !disabled
+          && 'cursor-pointer hover:border-gray-300 hover:bg-violet-500/10 hover:text-primary',
+        borderRadiusClass
+      )}
       aria-label={ariaLabel}>
-      <Icon className='h-6 w-6' aria-hidden='true' />
+      <Icon className={cn('h-6 w-6', disabled && 'text-gray-300')} />
     </button>
   );
 }
