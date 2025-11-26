@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useId, useMemo } from 'react';
-import InputLabel from '@/components/common/input/InputLabel';
+import Label from '@/components/common/Label';
 import { cn } from '@/utils/cn';
 import Button from './Button';
 import TextArea from './TextArea';
@@ -83,12 +83,12 @@ type TitleProps = {
 function Title({ children = '댓글', className, required }: TitleProps) {
   const { textAreaId } = useCommentContext();
   return (
-    <InputLabel
+    <Label
       htmlFor={textAreaId}
       required={required}
       className={cn('font-lg-bold text-gray-700', className)}>
       {children}
-    </InputLabel>
+    </Label>
   );
 }
 
