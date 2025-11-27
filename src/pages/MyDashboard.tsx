@@ -1,11 +1,10 @@
-import Button from '@/components/common/Button';
-import FormModal from '@/components/common/modal/FormModal';
 import CreateButton from '@/components/dashboard/CreateButton';
+import DashboardCreateModal from '@/components/dashboard/modal/DashboardCreateModal';
 import { NEW_DASHBOARD } from '@/constants/modalName';
 import { useModal } from '@/hooks/useModal';
 
 export default function MyDashboard() {
-  const { handleModalOpen, handleModalClose } = useModal(NEW_DASHBOARD);
+  const { handleModalOpen, isOpen } = useModal(NEW_DASHBOARD);
 
   return (
     <>
@@ -16,25 +15,7 @@ export default function MyDashboard() {
           </CreateButton>
         </div>
       </div>
-      {/* TODO: 새로운 대시보드 내부 요소 구현 및 API 연결 필요 */}
-      <FormModal modalName={NEW_DASHBOARD}>
-        <FormModal.Title title='새로운 대시보드' />
-        <FormModal.Form
-          onSubmit={() => {
-            console.log('나중에 바꿔야합니다 폼 제출!');
-            handleModalClose();
-          }}>
-          <FormModal.Body>인풋, 컬러칩</FormModal.Body>
-          <FormModal.Footer>
-            <Button theme={'outlined'} onClick={handleModalClose}>
-              취소
-            </Button>
-            <Button theme={'primary'} type='submit'>
-              생성
-            </Button>
-          </FormModal.Footer>
-        </FormModal.Form>
-      </FormModal>
+      {isOpen && <DashboardCreateModal />}
     </>
   );
 }

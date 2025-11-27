@@ -1,18 +1,13 @@
-import { useContext } from 'react';
-import { FormModalContext } from '@/context/formModalContext';
 export default function FormModalForm({
   children,
   onSubmit,
 }: {
   children: React.ReactNode;
-  onSubmit: () => void;
+  onSubmit: () => Promise<void>;
 }) {
-  const { handleModalClose } = useContext(FormModalContext);
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSubmit();
-    handleModalClose();
+    await onSubmit();
   };
   return <form onSubmit={handleSubmit}>{children}</form>;
 }
