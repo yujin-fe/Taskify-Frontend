@@ -9,13 +9,13 @@ export default function MyDashboard() {
 
   return (
     <>
-      <main className='p-[24px] sm:p-[40px]'>
+      <div className='p-[24px] sm:p-[40px]'>
         <div className='flex flex-col gap-[8px] sm:grid sm:grid-cols-2 sm:grid-rows-3 sm:gap-[10px] lg:grid-cols-3 lg:grid-rows-2 lg:gap-[13px]'>
           <CreateButton className='h-[58px] font-lg-semibold' onClick={handleModalOpen}>
             새로운 대시보드
           </CreateButton>
         </div>
-      </main>
+      </div>
       {/* TODO: 새로운 대시보드 내부 요소 구현 및 API 연결 필요 */}
       <FormModal modalName={NEW_DASHBOARD}>
         <FormModal.Title title='새로운 대시보드' />
