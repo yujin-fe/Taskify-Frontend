@@ -11,11 +11,10 @@ const AVATAR_MAX = {
 
 interface AvatarGroupProps {
   users: UserMe[];
-  size?: 'm';
   className?: string;
 }
 
-export default function AvatarGroup({ users, size = 'm', className }: AvatarGroupProps) {
+export default function AvatarGroup({ users, className }: AvatarGroupProps) {
   const maxToShow = useResponsiveValue({
     mobile: AVATAR_MAX.mobile,
     tablet: AVATAR_MAX.tablet,
@@ -26,10 +25,9 @@ export default function AvatarGroup({ users, size = 'm', className }: AvatarGrou
   const rest = users.length - visibleUsers.length;
 
   return (
-    <div
-      className={cn('flex items-center', size === 'm' ? '-space-x-3' : '-space-x-3.5', className)}>
+    <div className={cn('flex items-center', '-space-x-2.5', className)}>
       {visibleUsers.map((user) => (
-        <Avatar key={user.id} size={size} user={user}>
+        <Avatar key={user.id} size='m' user={user}>
           <Avatar.Img />
           <Avatar.Fallback />
         </Avatar>
@@ -38,9 +36,8 @@ export default function AvatarGroup({ users, size = 'm', className }: AvatarGrou
       {rest > 0 && (
         <div
           className={cn(
-            'flex items-center justify-center rounded-full font-lg-medium',
-            'border-2 border-gray-0 bg-profile-pink-100 text-pink-500',
-            size === 'm' ? 'h-[38px] w-[38px] font-lg-medium' : 'h-[24px] w-[24px] font-sm-medium'
+            'flex h-[38px] w-[38px] items-center justify-center rounded-full font-lg-medium',
+            'border-2 border-gray-0 bg-profile-pink-100 text-pink-500'
           )}>
           +{rest}
         </div>
