@@ -8,22 +8,27 @@ import Login from '@/pages/Login';
 import MyDashboard from '@/pages/MyDashboard';
 import Mypage from '@/pages/Mypage';
 import Signup from '@/pages/Signup';
+import ProtectedRoute from '@/router/ProtectedRoute';
+import PublicRoute from '@/router/PublicRoute';
 
 export default function Router() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Home />} />
-        <Route element={<AuthLayout />}>
-          <Route path='/login' element={<Login />} />
-          <Route path='/signup' element={<Signup />} />
+        <Route element={<PublicRoute />}>
+          <Route path='/' element={<Home />} />
+          <Route element={<AuthLayout />}>
+            <Route path='/login' element={<Login />} />
+            <Route path='/signup' element={<Signup />} />
+          </Route>
         </Route>
-        {/* 레이아웃 컴포넌트 연결 */}
-        <Route element={<Layout />}>
-          <Route path='/mydashboard' element={<MyDashboard />} />
-          <Route path='/dashboard/:dashboardId' element={<DashboardDetail />} />
-          <Route path='/dashboard/:dashboardId/edit' element={<DashboardEdit />} />
-          <Route path='/mypage' element={<Mypage />} />
+        <Route element={<ProtectedRoute />}>
+          <Route element={<Layout />}>
+            <Route path='/mydashboard' element={<MyDashboard />} />
+            <Route path='/dashboard/:dashboardId' element={<DashboardDetail />} />
+            <Route path='/dashboard/:dashboardId/edit' element={<DashboardEdit />} />
+            <Route path='/mypage' element={<Mypage />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

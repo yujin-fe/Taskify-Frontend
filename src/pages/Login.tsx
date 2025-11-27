@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import Icons from '@/assets/icons';
 import AuthForm from '@/components/auth/AuthForm';
@@ -31,16 +31,10 @@ export default function Login() {
     error,
     disabled,
   } = useAuthForm(loginInitialValue);
-  const { isLoggedIn, login } = useAuthContext();
+  const { login } = useAuthContext();
   const { isOpen, handleModalClose, handleModalOpen } = useBaseModal();
   const [apiErrorMsg, setApiErrorMsg] = useState('');
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      navigate('/mydashboard');
-    }
-  }, []);
 
   const handleSubmit = async () => {
     // TODO: useMutation 훅 구현 시 적용하기
