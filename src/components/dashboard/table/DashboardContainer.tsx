@@ -4,11 +4,9 @@ const DashboardContainerStyles = cva('w-full rounded-md bg-gray-0', {
   variants: {
     type: {
       // 구성원
-      Members:
-        'px-[20px] pt-[22px] pb-[16px] sm:px-[28px] sm:pt-[26px] sm:pb-[20px] lg:h-[440px] lg:w-[620px]',
+      Members: 'pt-[22px] pb-[16px] sm:pt-[26px] sm:pb-[20px] lg:h-[440px] lg:w-[620px]',
       // 초대 내역
-      Invites:
-        'px-[20px] pt-[24px] pb-[12px] sm:px-[28px] sm:pt-[32px] sm:pb-[20px] lg:h-[447px] lg:w-[620px]',
+      Invites: 'pt-[24px] pb-[12px] sm:pt-[32px] sm:pb-[20px] lg:h-[447px] lg:w-[620px]',
       // 프로필
       Profile: 'p-[16px] sm:rounded-xl sm:p-[24px] lg:h-[366px] lg:w-[672px]',
       // 비밀번호 변경
