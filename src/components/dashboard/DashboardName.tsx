@@ -1,10 +1,13 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import { Link, useParams } from 'react-router';
 import Icons from '@/assets/icons';
+import { COLOR_PALETTE } from '@/constants/color';
+import type { Dashboard } from '@/types/dashboardsData';
 import { cn } from '@/utils/cn';
+
 const DashboardColor = cva('w-2 h-2 rounded-full', {
   variants: {
-    color: {
+    colorName: {
       orange: 'bg-orange-500',
       blue: 'bg-blue-500',
       green: 'bg-green-500',
@@ -13,7 +16,7 @@ const DashboardColor = cva('w-2 h-2 rounded-full', {
     },
   },
   defaultVariants: {
-    color: 'orange',
+    colorName: 'orange',
   },
 });
 
@@ -43,26 +46,19 @@ const DashboardLinkStyle = cva('flex hover:bg-gray-100 rounded-sm', {
 
 interface DashboardNameProps extends VariantProps<typeof DashboardColor> {
   children: string;
-  createdByMe?: boolean;
-  dashboardId: string;
   isCollapsed: boolean;
+  dashboard: Dashboard;
 }
 
-export default function DashboardName({
-  color,
-  children,
-  createdByMe = false,
-  dashboardId,
-  isCollapsed,
-}: DashboardNameProps) {
+export default function DashboardName({ children, isCollapsed, dashboard }: DashboardNameProps) {
+  const { id, color, createdByMe } = dashboard;
   const params = useParams();
-  const isCurrent = params.dashboardId === dashboardId;
+  const isCurrent = params.dashboardId === id.toString();
+  const colorName = COLOR_PALETTE.find((colorItem) => colorItem.hexCode === color)?.color;
   return (
     <li>
-      <Link
-        to={`/dashboard/${dashboardId}`}
-        className={cn(DashboardLinkStyle({ isCollapsed, isCurrent }))}>
-        <div className={cn(DashboardColor({ color }))} />
+      <Link to={`/dashboard/${id}`} className={cn(DashboardLinkStyle({ isCollapsed, isCurrent }))}>
+        <div className={cn(DashboardColor({ colorName }))} />
         {!isCollapsed && (
           <div className='flex items-center gap-1.5'>
             <span className={'font-2lg-medium text-gray-500'}>{children}</span>
