@@ -1,10 +1,10 @@
 import { EMAIL_REGEX, PASSWORD_MIN_LEN } from '@/constants/authRegex';
 
-const validateEmail = (value: string) => {
+export const validateEmail = (value: string) => {
   return EMAIL_REGEX.test(value) ? '' : '이메일 형식으로 작성해 주세요.';
 };
 
-const validatePassword = (value: string) => {
+export const validatePassword = (value: string) => {
   return value.length >= PASSWORD_MIN_LEN ? '' : `${PASSWORD_MIN_LEN}자 이상 입력해 주세요.`;
 };
 

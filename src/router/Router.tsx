@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router';
 import AuthLayout from '@/pages/AuthLayout';
 import DashboardDetail from '@/pages/DashboardDetail';
 import DashboardEdit from '@/pages/DashboardEdit';
+import DetailLayout from '@/pages/DetailLayout';
 import Home from '@/pages/Home';
 import Layout from '@/pages/Layout';
 import Login from '@/pages/Login';
@@ -25,8 +26,10 @@ export default function Router() {
         <Route element={<ProtectedRoute />}>
           <Route element={<Layout />}>
             <Route path='/mydashboard' element={<MyDashboard />} />
-            <Route path='/dashboard/:dashboardId' element={<DashboardDetail />} />
-            <Route path='/dashboard/:dashboardId/edit' element={<DashboardEdit />} />
+            <Route element={<DetailLayout />}>
+              <Route path='/dashboard/:dashboardId' element={<DashboardDetail />} />
+              <Route path='/dashboard/:dashboardId/edit' element={<DashboardEdit />} />
+            </Route>
             <Route path='/mypage' element={<Mypage />} />
           </Route>
         </Route>

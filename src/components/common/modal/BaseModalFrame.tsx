@@ -4,8 +4,7 @@ import { cn } from '@/utils/cn';
 
 type BaseModalFrameProps = {
   size?: 'Login' | 'Account'; // Login: 로그인 페이지 Account: 계정 관리 페이지
-  children: string;
-
+  children: React.ReactNode;
   setOnModal: (state: boolean) => void;
 };
 /**

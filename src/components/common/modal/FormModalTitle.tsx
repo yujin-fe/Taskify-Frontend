@@ -16,7 +16,7 @@ export default function FormModalTitle({ title }: { title: string }) {
       </Title>
       {closeBtn && (
         <button onClick={handleModalClose} aria-label='모달 닫기' className='cursor-pointer'>
-          <icons.Close />
+          <icons.Close className='h-[24px] w-[24px] text-gray-700 sm:h-[36px] sm:w-[36px]' />
         </button>
       )}
     </div>

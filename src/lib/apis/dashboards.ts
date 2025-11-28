@@ -6,11 +6,13 @@ interface CreateDashboardType {
   color: ColorHex;
 }
 
+/** 대시보드 생성 함수 */
 export const createDashboard = async (reqBody: CreateDashboardType) => {
   const res = await api.post('/dashboards', reqBody);
   return res.data;
 };
 
+/** 대시보드 목록 조회 함수 */
 export const getDashboards = async (params: {
   navigationMethod: 'pagination' | 'infiniteScroll';
   page: number;
