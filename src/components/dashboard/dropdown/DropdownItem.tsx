@@ -17,7 +17,7 @@ export default function DropdownItem({ children, onClick }: DropdownItemProps) {
     <li
       role='menuitem'
       tabIndex={0}
-      className='dropdown-menu-item-base py-1 text-center font-md-regular hover:bg-violet-500-8 hover:text-violet-500'
+      className='w-[81px] dropdown-menu-item-base p-1 text-center font-md-regular hover:bg-violet-500-8 hover:text-violet-500'
       onClick={handleClickMenuItem}>
       {children}
     </li>
