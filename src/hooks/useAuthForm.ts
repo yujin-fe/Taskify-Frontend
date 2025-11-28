@@ -21,6 +21,9 @@ const useAuthForm = <InitT extends Record<string, string>>(initialValue: InitT) 
     if (key in validators) {
       return validators[key](value) !== '';
     }
+    if (key === 'confirmPassword') {
+      return value !== authForm.password;
+    }
 
     return false;
   });
@@ -36,8 +39,15 @@ const useAuthForm = <InitT extends Record<string, string>>(initialValue: InitT) 
       setError((prev) => ({ ...prev, [key]: '' }));
     };
 
-  const handleBlur = (key: string) => (value: string) => {
-    const message = key in validators ? validators[key](value) : '';
+  const handleBlur = (key: string, compareValue?: string) => (value: string) => {
+    let message = '';
+
+    if (key === 'confirmPassword') {
+      message = value === compareValue ? '' : '비밀번호가 일치하지 않습니다.';
+    } else if (key in validators) {
+      message = validators[key](value);
+    }
+
     setError((prev) => ({ ...prev, [key]: message }));
   };
 

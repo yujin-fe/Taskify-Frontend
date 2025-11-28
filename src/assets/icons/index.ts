@@ -1,5 +1,7 @@
 import PasswordHidden from '@/assets/icons/auth/ic-password-hidden.svg';
 import PasswordShow from '@/assets/icons/auth/ic-password-show.svg';
+import Checkbox from '@/assets/icons/auth/ic_checkbox.svg';
+import EmptyCheckbox from '@/assets/icons/auth/ic_emptycheckbox.svg';
 import AddDashboard from '@/assets/icons/dashboard/ic-add-dashboard.svg';
 import ArrowDropdown from '@/assets/icons/dashboard/ic-arrow-dropdown.svg';
 import ArrowLeft from '@/assets/icons/dashboard/ic-arrow-left.svg';
@@ -37,4 +39,6 @@ export default {
   Notion,
   Youtube,
   Sidebar,
+  Checkbox,
+  EmptyCheckbox,
 };
