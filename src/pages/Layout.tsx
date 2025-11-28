@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router';
+import DashboardCreateModal from '@/components/dashboard/modal/DashboardCreateModal';
 import SideBar from '@/components/dashboard/SideBar';
+import { NEW_DASHBOARD } from '@/constants/modalName';
 import { MOBILECOUNT, TABLETCOUNT, DESKTOPCOUNT } from '@/constants/sidebar';
 import { DashboardContext } from '@/context/dashboardContext';
+import { useModal } from '@/hooks/useModal';
 import { usePagination } from '@/hooks/usePagination';
 import { useResponsiveValue } from '@/hooks/useResponsiveValue';
 import { getDashboards } from '@/lib/apis/dashboards';
@@ -11,6 +14,7 @@ import { cn } from '@/utils/cn';
 
 export default function Layout() {
   //TODO: 로컬스토리지에서 관리
+  const { isOpen } = useModal(NEW_DASHBOARD);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [dashboardsData, setDashboardsData] = useState({
     dashboards: [],
@@ -46,8 +50,8 @@ export default function Layout() {
   }, [size, currentPage]);
 
   return (
-    <DashboardContext value={{ dashboardsData }}>
-      <div>
+    <>
+      <DashboardContext value={{ dashboardsData }}>
         <SideBar
           isCollapsed={isCollapsed}
           onClickSidebarIcon={() => setIsCollapsed(!isCollapsed)}
@@ -63,7 +67,8 @@ export default function Layout() {
             <Outlet />
           </main>
         </div>
-      </div>
-    </DashboardContext>
+      </DashboardContext>
+      {isOpen && <DashboardCreateModal />}
+    </>
   );
 }

@@ -3,7 +3,9 @@ import Icons from '@/assets/icons';
 import { Logo } from '@/components/common/Logo';
 import PageNation from '@/components/common/PageNation';
 import DashboardName from '@/components/dashboard/DashboardName';
+import { NEW_DASHBOARD } from '@/constants/modalName';
 import { DashboardContext } from '@/context/dashboardContext';
+import { useModal } from '@/hooks/useModal';
 import { cn } from '@/utils/cn';
 
 interface SideBarProps {
@@ -24,6 +26,8 @@ export default function SideBar({
   isPrevDisabled,
 }: SideBarProps) {
   const { dashboardsData } = useContext(DashboardContext);
+  const { handleModalOpen } = useModal(NEW_DASHBOARD);
+
   return (
     <aside
       className={cn(
@@ -51,7 +55,10 @@ export default function SideBar({
             <span className={cn('font-xs-semibold text-gray-500', isCollapsed && 'hidden')}>
               Dash Board
             </span>
-            <button className={cn('cursor-pointer', isCollapsed && 'mx-auto')}>
+            <button
+              aria-label='대시보드 생성'
+              onClick={handleModalOpen}
+              className={cn('cursor-pointer', isCollapsed && 'mx-auto')}>
               <Icons.AddDashboard className='text-gray-500' />
             </button>
           </div>
