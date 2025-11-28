@@ -7,47 +7,54 @@ import { MOBILECOUNT, TABLETCOUNT, DESKTOPCOUNT } from '@/constants/sidebar';
 import { DashboardContext } from '@/context/dashboardContext';
 import { useModal } from '@/hooks/useModal';
 import { usePagination } from '@/hooks/usePagination';
+import useQuery from '@/hooks/useQuery';
 import { useResponsiveValue } from '@/hooks/useResponsiveValue';
 import { getDashboards } from '@/lib/apis/dashboards';
 import { type DashboardsResponse } from '@/types/dashboardsData';
 import { cn } from '@/utils/cn';
 
 export default function Layout() {
-  //TODO: 로컬스토리지에서 관리
   const { isOpen } = useModal(NEW_DASHBOARD);
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [dashboardsData, setDashboardsData] = useState({
-    dashboards: [],
-    totalCount: 0,
-    cursorId: 0,
-  } as DashboardsResponse);
-
   const size = useResponsiveValue({
     mobile: MOBILECOUNT,
     tablet: TABLETCOUNT,
     desktop: DESKTOPCOUNT,
   });
-  const { totalCount, cursorId } = dashboardsData;
-  const pageCount = Math.ceil(totalCount / size);
 
-  const { currentPage, handlePrev, handleNext, isPrevDisabled, isNextDisabled } =
-    usePagination(pageCount);
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    const collapsed = localStorage.getItem('sidebar-collapsed');
+    return collapsed && JSON.parse(collapsed);
+  });
 
-  const params = {
+  const { currentPage, handlePrev, handleNext, isPrevDisabled } = usePagination();
+
+  const params: parmasType = {
     navigationMethod: 'pagination',
     page: currentPage,
     size,
-    cursorId,
+    cursorId: null,
   };
+  interface parmasType {
+    navigationMethod: 'pagination' | 'infiniteScroll';
+    page: number;
+    size: number;
+    cursorId: number | null;
+  }
 
-  //TODO: useQuery hook 생성되면 교체
+  const { data: dashboardsData } = useQuery<DashboardsResponse>({
+    fetchFn: () => getDashboards(params),
+    params,
+  });
+
   useEffect(() => {
-    const getDashboardsData = async () => {
-      const data = await getDashboards(params);
-      setDashboardsData(data);
-    };
-    getDashboardsData();
-  }, [size, currentPage]);
+    localStorage.setItem('sidebar-collapsed', JSON.stringify(isCollapsed));
+  }, [isCollapsed]);
+
+  if (!dashboardsData) {
+    return null;
+  }
+  const { totalCount } = dashboardsData;
+  const pageCount = Math.ceil(totalCount / size);
 
   return (
     <>
@@ -58,7 +65,7 @@ export default function Layout() {
           handlePrev={handlePrev}
           handleNext={handleNext}
           isPrevDisabled={isPrevDisabled}
-          isNextDisabled={isNextDisabled}
+          isNextDisabled={pageCount === currentPage}
         />
         <div className={cn(isCollapsed ? 'pl-[67px]' : 'pl-[67px] md:pl-[300px]')}>
           {/* header는 테스트용 코드입니다 */}

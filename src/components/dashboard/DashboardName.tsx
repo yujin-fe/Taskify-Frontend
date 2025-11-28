@@ -27,7 +27,7 @@ const DashboardLinkStyle = cva('flex hover:bg-gray-100 rounded-sm', {
       false: 'items-center justify-start gap-4 bg-gray-0 px-3 py-2 max-md:px-2.5 max-md:py-[7px]',
     },
     isCurrent: {
-      true: 'bg-purple-500/8 p-3 max-md:px-2.5 max-md:py-2 hover:bg-purple-500/8',
+      true: 'bg-purple-500/8 p-3 max-md:px-2.5 hover:bg-purple-500/8',
     },
   },
   compoundVariants: [

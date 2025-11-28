@@ -12,7 +12,7 @@ export const createDashboard = async (reqBody: CreateDashboardType) => {
 };
 
 export const getDashboards = async (params: {
-  navigationMethod: string;
+  navigationMethod: 'pagination' | 'infiniteScroll';
   page: number;
   size: number;
   cursorId: number | null;

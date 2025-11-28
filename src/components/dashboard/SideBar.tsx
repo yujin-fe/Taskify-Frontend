@@ -65,7 +65,7 @@ export default function SideBar({
           <ul
             className={cn(
               'flex h-[292px] flex-col gap-2 sm:h-[378px] md:h-[492px]',
-              isCollapsed && 'gap-3.5'
+              isCollapsed && 'h-[540px] gap-3.5'
             )}>
             {dashboardsData.dashboards?.map((dashboard) => (
               <DashboardName key={dashboard.id} isCollapsed={isCollapsed} dashboard={dashboard}>
