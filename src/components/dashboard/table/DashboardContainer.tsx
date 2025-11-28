@@ -8,9 +8,9 @@ const DashboardContainerStyles = cva('w-full rounded-md bg-gray-0', {
       // 초대 내역
       Invites: 'pt-[24px] pb-[12px] sm:pt-[32px] sm:pb-[20px] lg:h-[447px] lg:w-[620px]',
       // 프로필
-      Profile: 'p-[16px] sm:rounded-xl sm:p-[24px] lg:h-[366px] lg:w-[672px]',
+      Profile: 'p-[16px] sm:rounded-xl sm:p-[24px] max-w-[672px]',
       // 비밀번호 변경
-      ChangePassword: 'p-[16px] sm:rounded-xl sm:p-[24px]',
+      ChangePassword: 'p-[16px] sm:rounded-xl sm:p-[24px] max-w-[672px]',
       // 대시보드 이름 수정(대시보드 수정)
       EditDashboardName:
         'px-[16px] py-[20px] sm:rounded-xl sm:px-[28px] sm:py-[32px] lg:h-[344px] lg:w-[620px]',

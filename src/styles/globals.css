@@ -5,6 +5,7 @@
 @import './base/font-utilities.css';
 @import './components/modalUtilities.css';
 @import './components/dropdownUtilites.css';
+@import './components/mypageUtilites.css';
 
 li {
   list-style: none;

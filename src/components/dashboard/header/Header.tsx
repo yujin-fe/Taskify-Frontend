@@ -76,6 +76,10 @@ export default function Header({ isCollapsed }: HeaderProps) {
         isCollapsed ? 'pl-[65px]' : 'md:pl-[300px]'
       )}>
       <div className='flex h-[60px] items-center justify-between pl-[16px] sm:h-[70px] md:pl-[40px]'>
+        <Title size={'xl'} weight={'bold'} className='flex sm:hidden'>
+          {title}
+        </Title>
+
         <Title size={'xl'} weight={'bold'} className='hidden items-center gap-[8px] sm:flex'>
           {title || dashboardData?.title}
           {dashboardData?.createdByMe && <Icons.Crown className='text-crown' />}

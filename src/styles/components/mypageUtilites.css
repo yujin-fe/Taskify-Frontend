@@ -1,0 +1,3 @@
+@utility mypage-label {
+  @apply font-md-regular sm:font-lg-regular;
+}
