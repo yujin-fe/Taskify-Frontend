@@ -23,23 +23,23 @@ export default function Layout() {
 
   const [isCollapsed, setIsCollapsed] = useState(() => {
     const collapsed = localStorage.getItem('sidebar-collapsed');
-    return collapsed && JSON.parse(collapsed);
+    return collapsed ? JSON.parse(collapsed) : false;
   });
 
   const { currentPage, handlePrev, handleNext, isPrevDisabled } = usePagination();
 
-  const params: parmasType = {
-    navigationMethod: 'pagination',
-    page: currentPage,
-    size,
-    cursorId: null,
-  };
-  interface parmasType {
+  interface GetDashboardsparams {
     navigationMethod: 'pagination' | 'infiniteScroll';
     page: number;
     size: number;
     cursorId: number | null;
   }
+  const params: GetDashboardsparams = {
+    navigationMethod: 'pagination',
+    page: currentPage,
+    size,
+    cursorId: null,
+  };
 
   const { data: dashboardsData } = useQuery<DashboardsResponse>({
     fetchFn: () => getDashboards(params),
@@ -51,7 +51,11 @@ export default function Layout() {
   }, [isCollapsed]);
 
   if (!dashboardsData) {
-    return null;
+    return (
+      <div className='flex h-screen items-center justify-center'>
+        <p>로딩 중...</p>
+      </div>
+    );
   }
   const { totalCount } = dashboardsData;
   const pageCount = Math.ceil(totalCount / size);
