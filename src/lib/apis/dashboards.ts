@@ -22,3 +22,9 @@ export const getDashboards = async (params: {
   const res = await api.get('/dashboards/', { params });
   return res.data;
 };
+
+/** 대시보드 상세 조회 함수 */
+export const getDashboardDetail = async (dashboardId: string) => {
+  const res = await api.get(`/dashboards/${dashboardId}`);
+  return res.data;
+};

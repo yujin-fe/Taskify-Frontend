@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router';
 import Avatar from '@/components/common/avatar/Avatar';
 import Dropdown from '@/components/dashboard/dropdown/Dropdown';
 import useAuthContext from '@/hooks/useAuthContext';
@@ -8,35 +9,41 @@ interface HeaderUserInfoProps {
 }
 
 export default function HeaderUserInfo({ user }: HeaderUserInfoProps) {
-  const { isLoggedIn, logout } = useAuthContext();
+  const { logout } = useAuthContext();
+  const navigate = useNavigate();
 
-  const handleMyPage = () => {};
+  const handleMyPage = () => {
+    navigate('/mypage');
+  };
+
+  const handleMyDashboard = () => {
+    navigate('/mydashboard');
+  };
 
   const handleLogout = () => {
     logout();
   };
 
-  if (!isLoggedIn || !user) {
+  if (!user) {
     return null;
   }
 
   return (
     <div className='flex items-center gap-2'>
       <Dropdown>
-        <Dropdown.Trigger className='rounded-full px-1 py-1'>
+        <Dropdown.Trigger className='flex items-center gap-[12px]'>
           <Avatar size='m' user={user}>
             <Avatar.Img />
             <Avatar.Fallback />
           </Avatar>
+          <span className='hidden font-lg-medium text-gray-700 md:inline'>{user.nickname}</span>
         </Dropdown.Trigger>
-
-        <Dropdown.List>
-          <Dropdown.Item onClick={handleMyPage}>내 정보</Dropdown.Item>
+        <Dropdown.List className='border border-gray-300'>
           <Dropdown.Item onClick={handleLogout}>로그아웃</Dropdown.Item>
+          <Dropdown.Item onClick={handleMyPage}>내 정보</Dropdown.Item>
+          <Dropdown.Item onClick={handleMyDashboard}>내 대시보드</Dropdown.Item>
         </Dropdown.List>
       </Dropdown>
-
-      <span className='hidden font-lg-medium text-gray-900 md:inline'>{user.nickname}</span>
     </div>
   );
 }

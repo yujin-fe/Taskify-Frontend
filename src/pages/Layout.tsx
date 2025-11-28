@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router';
+import Header from '@/components/dashboard/header/Header';
 import DashboardCreateModal from '@/components/dashboard/modal/DashboardCreateModal';
 import SideBar from '@/components/dashboard/SideBar';
 import { NEW_DASHBOARD } from '@/constants/modalName';
@@ -41,7 +42,7 @@ export default function Layout() {
     cursorId: null,
   };
 
-  const { data: dashboardsData } = useQuery<DashboardsResponse>({
+  const { data: dashboardsData, isLoading } = useQuery<DashboardsResponse>({
     fetchFn: () => getDashboards(params),
     params,
   });
@@ -50,30 +51,20 @@ export default function Layout() {
     localStorage.setItem('sidebar-collapsed', JSON.stringify(isCollapsed));
   }, [isCollapsed]);
 
-  if (!dashboardsData) {
-    return (
-      <div className='flex h-screen items-center justify-center'>
-        <p>로딩 중...</p>
-      </div>
-    );
-  }
-  const { totalCount } = dashboardsData;
-  const pageCount = Math.ceil(totalCount / size);
-
   return (
     <>
-      <DashboardContext value={{ dashboardsData }}>
+      <DashboardContext value={{ dashboardsData, isLoading }}>
         <SideBar
           isCollapsed={isCollapsed}
           onClickSidebarIcon={() => setIsCollapsed(!isCollapsed)}
           handlePrev={handlePrev}
           handleNext={handleNext}
           isPrevDisabled={isPrevDisabled}
-          isNextDisabled={pageCount === currentPage}
+          size={size}
+          currentPage={currentPage}
         />
+        <Header isCollapsed={isCollapsed} />
         <div className={cn(isCollapsed ? 'pl-[67px]' : 'pl-[67px] md:pl-[300px]')}>
-          {/* header는 테스트용 코드입니다 */}
-          <header className='fixed top-0 h-[70px] w-full bg-gray-0'>헤더</header>
           <main className='min-h-dvh bg-base pt-[70px]'>
             <Outlet />
           </main>
