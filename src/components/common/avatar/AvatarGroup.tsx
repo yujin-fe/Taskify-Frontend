@@ -1,6 +1,6 @@
 import Avatar from '@/components/common/avatar/Avatar';
 import { useResponsiveValue } from '@/hooks/useResponsiveValue';
-import type { UserMe } from '@/types/userMe';
+import type { Member } from '@/types/members';
 import { cn } from '@/utils/cn';
 
 const AVATAR_MAX = {
@@ -10,7 +10,7 @@ const AVATAR_MAX = {
 };
 
 interface AvatarGroupProps {
-  users: UserMe[];
+  users: Member[] | undefined;
   className?: string;
 }
 
@@ -20,6 +20,10 @@ export default function AvatarGroup({ users, className }: AvatarGroupProps) {
     tablet: AVATAR_MAX.tablet,
     desktop: AVATAR_MAX.desktop,
   });
+
+  if (!users) {
+    return null;
+  }
 
   const visibleUsers = users.slice(0, maxToShow);
   const rest = users.length - visibleUsers.length;
