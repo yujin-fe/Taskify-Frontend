@@ -1,6 +1,9 @@
+import { cn } from '@/utils/cn';
+
 export interface DashboardListProps {
   className?: string;
   title: string | string[];
+  titleClassName?: string;
   children: React.ReactNode;
 }
 
@@ -16,21 +19,28 @@ export interface DashboardListProps {
  * </DashboardList>
  * * @example
  * // 2. 문자열 배열 (여러 개의 열 제목) 전달 시
- * <DashboardList title={["이름", "초대자", "수락여부"]}>
+ * <DashboardList title={["이름", "초대자"]} titleClassName='sm:pl-7 pl-5' >
  * <DashboardItem>
  * <DashboardItem.Content />
  * </DashboardItem>
  * </DashboardList>
  */
 
-export default function DashboardList({ className, title, children }: DashboardListProps) {
+export default function DashboardList({
+  className,
+  title,
+  children,
+  titleClassName,
+}: DashboardListProps) {
   const titles = Array.isArray(title) ? title : [title];
 
   return (
     <div className={className}>
       <div className='flex items-center justify-between'>
         {titles.map((t, index) => (
-          <h3 key={index} className='font-md-regular text-gray-400 sm:font-lg-regular'>
+          <h3
+            key={index}
+            className={cn('font-md-regular text-gray-400 sm:font-lg-regular', titleClassName)}>
             {t}
           </h3>
         ))}

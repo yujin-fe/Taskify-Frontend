@@ -27,7 +27,7 @@ function DashboardItem(props: DashboardItemRootProps) {
   return (
     <li
       className={cn(
-        'flex items-center justify-between border-t border-gray-200 px-7 py-4 first:border-t-0',
+        'flex items-center justify-between border-t border-gray-200 px-5 py-4 first:border-t-0 sm:px-7',
         props.className
       )}>
       {props.children}
