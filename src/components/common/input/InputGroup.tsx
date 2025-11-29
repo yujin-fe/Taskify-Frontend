@@ -30,7 +30,12 @@ function autoAddToFields(children: React.ReactNode) {
   });
 }
 
-export default function InputGroup({ children }: { children: React.ReactNode }) {
+interface InputGroupProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export default function InputGroup({ children, className }: InputGroupProps) {
   const { hasError, disabled } = useInputContext();
 
   return (
@@ -38,7 +43,8 @@ export default function InputGroup({ children }: { children: React.ReactNode }) 
       className={cn(
         'relative rounded-[8px] border border-gray-300 bg-gray-0 px-[16px] py-[12px] focus-within:border-primary',
         hasError && 'border-error focus-within:border-error',
-        disabled && 'cursor-not-allowed text-gray-400'
+        disabled && 'cursor-not-allowed text-gray-400',
+        className
       )}>
       {autoAddToFields(children)}
     </div>
