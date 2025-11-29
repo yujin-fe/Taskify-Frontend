@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import AvatarFallback from '@/components/common/avatar/AvatarFallback';
 import AvatarImg from '@/components/common/avatar/AvatarImg';
 import { AvatarContext } from '@/context/avatarContext';
+import type { Assignee } from '@/types/card';
+import type { Member } from '@/types/members';
 import type { UserMe } from '@/types/userMe';
 import { cn } from '@/utils/cn';
 
 interface AvatarProps {
   children: React.ReactNode;
   size: 's' | 'm';
-  user: UserMe;
+  user: UserMe | Assignee | Member;
 }
 
 /**
@@ -21,7 +23,7 @@ interface AvatarProps {
 
 export default function Avatar({ children, size, user }: AvatarProps) {
   const [imageError, setImageError] = useState(false);
-  const AvatarStyle = cn('rounded-full overflow-hidden', {
+  const AvatarStyle = cn('pointer-events-none rounded-full overflow-hidden', {
     'w-[24px] h-[24px] ': size === 's',
     'w-[38px] h-[38px] border-2 border-gray-0': size === 'm',
   });
@@ -34,7 +36,7 @@ export default function Avatar({ children, size, user }: AvatarProps) {
     (child) => React.isValidElement(child) && child.type === AvatarFallback
   );
   return (
-    <AvatarContext value={{ ...user, setImageError }}>
+    <AvatarContext value={{ user, setImageError }}>
       <div className={AvatarStyle}>{user.profileImageUrl && !imageError ? img : fallback}</div>
     </AvatarContext>
   );

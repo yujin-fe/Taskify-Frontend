@@ -4,7 +4,7 @@ import { AvatarContext } from '@/context/avatarContext';
 import { getMonogram, getProfileColorForId } from '@/utils/avatar';
 
 const AvatarFallbackStyle = cva(
-  'flex items-center justify-center w-full h-full text-gray-0 select-none',
+  'font-md-regular flex items-center justify-center w-full h-full text-gray-0 select-none',
   {
     variants: {
       color: {
@@ -19,8 +19,9 @@ const AvatarFallbackStyle = cva(
 );
 
 export default function AvatarFallback() {
-  const { nickname, id, userId } = useContext(AvatarContext);
-  const color = getProfileColorForId(userId ?? id);
+  const { user } = useContext(AvatarContext);
+  const idForColor = 'userId' in user ? user.userId : user.id;
+  const color = getProfileColorForId(idForColor);
 
-  return <div className={AvatarFallbackStyle({ color })}>{getMonogram(nickname)}</div>;
+  return <div className={AvatarFallbackStyle({ color })}>{getMonogram(user.nickname)}</div>;
 }
