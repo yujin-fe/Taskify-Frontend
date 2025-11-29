@@ -1,12 +1,23 @@
 import Icons from '@/assets/icons';
+import ColumnHeaderSkeleton from '@/components/skeleton/ColumnHeaderSkeleton';
 
 interface ColumnInfoHeaderProps {
   title: string;
   totalCount: number;
   onClick: () => void;
+  isLoading: boolean;
 }
 
-export default function ColumnInfoHeader({ title, totalCount, onClick }: ColumnInfoHeaderProps) {
+export default function ColumnInfoHeader({
+  isLoading,
+  title,
+  totalCount,
+  onClick,
+}: ColumnInfoHeaderProps) {
+  if (isLoading) {
+    return <ColumnHeaderSkeleton />;
+  }
+
   return (
     <div className='mb-[24px] flex items-center justify-between'>
       <div className='flex items-center gap-[8px] select-none'>
