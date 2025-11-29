@@ -54,39 +54,34 @@ export default function Header({ isCollapsed }: HeaderProps) {
     params: { dashboardId },
   });
 
-  /** 버튼 렌더링 조건 */
-  const shouldViewButtons = !pathname.includes('/mydashboard') && !pathname.includes('/mypage');
-
   const isLoading = userDataLoading || dashboardDataLoading || memberDataLoading;
 
   if (isLoading) {
-    return (
-      <HeaderSkeleton
-        isCollapsed={isCollapsed}
-        isDashboardDetail={isDashboardDetail}
-        shouldViewButtons={shouldViewButtons}
-      />
-    );
+    return <HeaderSkeleton isCollapsed={isCollapsed} isDashboardDetail={isDashboardDetail} />;
   }
 
   return (
     <header
       className={cn(
         'fixed top-0 left-0 w-full bg-gray-0 px-[8px] md:pr-[24px] lg:pr-[40px]',
-        isCollapsed ? 'pl-[65px]' : 'md:pl-[300px]'
+        isCollapsed ? 'pl-[65px]' : 'md:pl-[300px]',
+        isDashboardDetail && 'border-b border-gray-300'
       )}>
       <div className='flex h-[60px] items-center justify-between pl-[16px] sm:h-[70px] md:pl-[40px]'>
-        <Title size={'xl'} weight={'bold'} className='flex sm:hidden'>
-          {title}
-        </Title>
+        <div className='mr-[16px] overflow-hidden'>
+          <Title size='xl' weight='bold'>
+            {title}
+          </Title>
 
-        <Title size={'xl'} weight={'bold'} className='hidden items-center gap-[8px] sm:flex'>
-          {title || dashboardData?.title}
-          {dashboardData?.createdByMe && <Icons.Crown className='text-crown' />}
-        </Title>
-
-        {shouldViewButtons && (
-          <div className='mr-[16px] ml-auto flex gap-[16px] sm:mr-[32px] md:mr-[40px]'>
+          {dashboardData && (
+            <Title size='xl' weight='bold' className='hidden items-center gap-[8px] sm:flex'>
+              <span className='truncate whitespace-nowrap'>{dashboardData.title}</span>
+              {dashboardData.createdByMe && <Icons.Crown className='shrink-0 text-crown' />}
+            </Title>
+          )}
+        </div>
+        {isDashboardDetail && (
+          <div className='mr-[16px] ml-auto flex gap-[16px] lg:mr-[32px]'>
             <SettingButton />
             <InviteButton onClick={handleModalOpen} />
           </div>
@@ -94,8 +89,8 @@ export default function Header({ isCollapsed }: HeaderProps) {
 
         {isDashboardDetail && <AvatarGroup users={memberData?.members} />}
 
-        {shouldViewButtons && (
-          <div className='mx-[16px] h-[38px] border-r border-gray-300 sm:mx-[24px] md:mx-[32px]' />
+        {isDashboardDetail && (
+          <div className='mx-[16px] h-[38px] border-r border-gray-300 lg:mx-[32px]' />
         )}
         <HeaderUserInfo user={userData} />
       </div>
