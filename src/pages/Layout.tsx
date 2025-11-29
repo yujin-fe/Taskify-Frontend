@@ -11,9 +11,8 @@ import { usePagination } from '@/hooks/usePagination';
 import useQuery from '@/hooks/useQuery';
 import { useResponsiveValue } from '@/hooks/useResponsiveValue';
 import { getDashboards } from '@/lib/apis/dashboards';
-import { type DashboardsResponse } from '@/types/dashboardsData';
+import { type DashboardsResponse, type GetDashboardsparams } from '@/types/dashboardsData';
 import { cn } from '@/utils/cn';
-
 export default function Layout() {
   const { isOpen } = useModal(NEW_DASHBOARD);
   const size = useResponsiveValue({
@@ -29,12 +28,6 @@ export default function Layout() {
 
   const { currentPage, handlePrev, handleNext, isPrevDisabled } = usePagination();
 
-  interface GetDashboardsparams {
-    navigationMethod: 'pagination' | 'infiniteScroll';
-    page: number;
-    size: number;
-    cursorId: number | null;
-  }
   const params: GetDashboardsparams = {
     navigationMethod: 'pagination',
     page: currentPage,

@@ -12,7 +12,7 @@ export default function CreateButton({ onClick, className, children }: CreateBut
     <button
       type='button'
       className={cn(
-        'flex h-[32px] w-full cursor-pointer items-center justify-center rounded-[6px] border border-gray-300 bg-gray-0 sm:h-[40px]',
+        'name-card-base',
         children && 'gap-[12px] text-gray-700 sm:h-[70px]',
         className
       )}

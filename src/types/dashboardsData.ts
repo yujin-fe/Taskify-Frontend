@@ -15,3 +15,10 @@ export interface DashboardsResponse {
   totalCount: number;
   dashboards: Dashboard[];
 }
+
+export interface GetDashboardsparams {
+  navigationMethod: 'pagination' | 'infiniteScroll';
+  page: number;
+  size: number;
+  cursorId: number | null;
+}

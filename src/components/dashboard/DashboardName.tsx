@@ -2,23 +2,9 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { Link, useParams } from 'react-router';
 import Icons from '@/assets/icons';
 import { COLOR_PALETTE } from '@/constants/color';
+import { DashboardColor } from '@/styles/components/dashboardColor';
 import type { Dashboard } from '@/types/dashboardsData';
 import { cn } from '@/utils/cn';
-
-const DashboardColor = cva('w-2 h-2 rounded-full', {
-  variants: {
-    colorName: {
-      orange: 'bg-orange-500',
-      blue: 'bg-blue-500',
-      green: 'bg-green-500',
-      pink: 'bg-pink-500',
-      purple: 'bg-purple-500',
-    },
-  },
-  defaultVariants: {
-    colorName: 'orange',
-  },
-});
 
 const DashboardLinkStyle = cva('flex hover:bg-gray-100 rounded-sm', {
   variants: {
