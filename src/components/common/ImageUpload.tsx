@@ -7,6 +7,8 @@ type ImageUploadProps = {
   file?: File | null; // 부모에서 관리하는 상태
   onFileChange?: (file: File | null) => void;
   edit?: boolean;
+  defaultImageUrl?: string | null;
+  setDefaultImageUrl?: (img: string | null) => void;
 };
 
 /**
@@ -38,13 +40,21 @@ type ImageUploadProps = {
 export default function ImageUpload({
   size = 'Small',
   onFileChange,
+  defaultImageUrl,
+  setDefaultImageUrl,
   file,
   edit = false,
 }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const preview = useMemo(() => {
-    return file ? URL.createObjectURL(file) : null;
-  }, [file]);
+    if (file) {
+      return URL.createObjectURL(file);
+    }
+    if (defaultImageUrl) {
+      return defaultImageUrl;
+    }
+    return null;
+  }, [file, defaultImageUrl]);
 
   // 파일 선택 버튼 클릭
   const handleButtonClick = () => inputRef.current?.click();
@@ -63,6 +73,7 @@ export default function ImageUpload({
       inputRef.current.value = '';
     }
     onFileChange?.(null);
+    setDefaultImageUrl?.(null);
   };
 
   // value(File)가 바뀔 때 preview 업데이트

@@ -9,12 +9,11 @@ import HeaderSkeleton from '@/components/skeleton/HeaderSkeleton';
 import { INVITE } from '@/constants/modalName';
 import { useModal } from '@/hooks/useModal';
 import useQuery from '@/hooks/useQuery';
+import useUserContext from '@/hooks/useUserContext';
 import { getDashboardDetail } from '@/lib/apis/dashboards';
 import { getMemberList } from '@/lib/apis/members';
-import { getUsersMe } from '@/lib/apis/users';
 import type { Dashboard } from '@/types/dashboardsData';
 import type { MembersResponse } from '@/types/members';
-import type { UserMe } from '@/types/userMe';
 import { cn } from '@/utils/cn';
 
 /** 타이틀 함수 */
@@ -41,7 +40,7 @@ export default function Header({ isCollapsed }: HeaderProps) {
   const isDashboardDetail = /^\/dashboard\/\d+/.test(pathname);
   const dashboardId = isDashboardDetail ? pathname.split('/')[2] : undefined;
 
-  const { data: userData, isLoading: userDataLoading } = useQuery<UserMe>({ fetchFn: getUsersMe });
+  const { userProfile, userDataLoading } = useUserContext();
 
   const { data: dashboardData, isLoading: dashboardDataLoading } = useQuery<Dashboard>({
     fetchFn: () =>
@@ -92,7 +91,7 @@ export default function Header({ isCollapsed }: HeaderProps) {
         {isDashboardDetail && (
           <div className='mx-[16px] h-[38px] border-r border-gray-300 lg:mx-[32px]' />
         )}
-        <HeaderUserInfo user={userData} />
+        <HeaderUserInfo user={userProfile} />
       </div>
     </header>
   );
