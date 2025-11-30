@@ -9,6 +9,7 @@ import { usePagination } from '@/hooks/usePagination';
 import useQuery from '@/hooks/useQuery';
 import { getDashboards } from '@/lib/apis/dashboards';
 import { type DashboardsResponse, type GetDashboardsparams } from '@/types/dashboardsData';
+import { cn } from '@/utils/cn';
 const PAGE_SIZE = 5;
 
 export default function MyDashboard() {
@@ -46,7 +47,11 @@ export default function MyDashboard() {
     <>
       <div className='flex max-w-[1022px] flex-col p-[24px] sm:p-[40px]'>
         <section className='flex max-w-[1022px] flex-col gap-3'>
-          <div className='flex h-[388px] flex-col gap-[8px] sm:grid sm:h-[230px] sm:grid-cols-2 sm:grid-rows-3 sm:gap-3 md:gap-2.5 lg:h-[152px] lg:grid-cols-3 lg:grid-rows-2 lg:gap-[13px]'>
+          <div
+            className={cn(
+              'flex h-[388px] flex-col gap-[8px] sm:grid sm:h-[230px] sm:grid-cols-2 sm:grid-rows-3 sm:gap-3 md:gap-2.5 lg:h-[152px] lg:grid-cols-3 lg:grid-rows-2 lg:gap-[13px]',
+              pageCount === 1 && 'h-fit'
+            )}>
             <CreateButton className='h-[58px] font-lg-semibold' onClick={handleModalOpen}>
               새로운 대시보드
             </CreateButton>

@@ -1,5 +1,5 @@
 import { api } from '@/lib/axios';
-import type { InvitationParams, InvitationResponse } from '@/types/invitations';
+import type { InvitationParams, DashboardInvitationResponse } from '@/types/invitations';
 /** 대시보드 초대 함수 */
 export const inviteDashboard = async (dashboardId: string, reqBody: { email: string }) => {
   const res = await api.post(`/dashboards/${dashboardId}/invitations`, reqBody);
@@ -15,7 +15,7 @@ export const getInvitationList = async (params: {
   dashboardId: string;
   page?: number;
   size?: number;
-}): Promise<InvitationResponse> => {
+}): Promise<DashboardInvitationResponse> => {
   const { dashboardId, ...queryParams } = params;
   const res = await api.get(`/dashboards/${dashboardId}/invitations`, { params: queryParams });
 

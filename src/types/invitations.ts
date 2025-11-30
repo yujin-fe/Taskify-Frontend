@@ -26,8 +26,13 @@ export interface Invitation {
   updatedAt: string; // ISO string
 }
 
-export interface InvitationResponse {
-  cursorId: number;
-  totalCount: number;
+export interface MyInvitationResponse {
+  cursorId: number | null;
   invitations: Invitation[];
+}
+
+export interface DashboardInvitationResponse {
+  cursorId: number | null;
+  invitations: Invitation[];
+  totalCount: number;
 }
