@@ -14,7 +14,6 @@ type MembersItemProps = {
   user: {
     nickname: string;
     profileImageUrl: string | null;
-    initials: string;
     id: number;
     email: string;
     createdAt: string;
