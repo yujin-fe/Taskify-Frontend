@@ -39,7 +39,7 @@ export default function SideBar({
   return (
     <aside
       className={cn(
-        'fixed top-0 left-0 z-1 flex h-screen flex-col bg-gray-0 px-2 py-5',
+        'fixed top-0 left-0 z-1 z-20 flex h-screen flex-col bg-gray-0 px-2 py-5',
         isCollapsed ? 'w-[67px] items-center gap-3.5' : 'w-[300px] gap-14'
       )}>
       <div className='group flex h-7 justify-between'>

@@ -62,7 +62,7 @@ export default function Header({ isCollapsed }: HeaderProps) {
   return (
     <header
       className={cn(
-        'fixed top-0 left-0 w-full bg-gray-0 px-[8px] md:pr-[24px] lg:pr-[40px]',
+        'fixed top-0 left-0 z-10 w-full bg-gray-0 px-[8px] md:pr-[24px] lg:pr-[40px]',
         isCollapsed ? 'pl-[65px]' : 'md:pl-[300px]',
         isDashboardDetail && 'border-b border-gray-300'
       )}>
