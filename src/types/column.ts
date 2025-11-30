@@ -1,4 +1,4 @@
-interface ColumnsData {
+export interface ColumnsData {
   id: number;
   title: string;
   teamId: string;
