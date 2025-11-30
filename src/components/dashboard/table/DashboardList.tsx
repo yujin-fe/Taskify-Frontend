@@ -38,11 +38,11 @@ export default function DashboardList({
     <div className={className}>
       <div className='flex items-center justify-between'>
         {titles.map((t, index) => (
-          <h3
+          <h4
             key={index}
             className={cn('font-md-regular text-gray-400 sm:font-lg-regular', titleClassName)}>
             {t}
-          </h3>
+          </h4>
         ))}
       </div>
       <ul>{children}</ul>

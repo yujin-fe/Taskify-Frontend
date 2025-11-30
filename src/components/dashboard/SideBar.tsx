@@ -91,7 +91,7 @@ export default function SideBar({
               onPrev={handlePrev}
               onNext={handleNext}
               prevDisabled={isPrevDisabled}
-              nextDisabled={pageCount >= currentPage}
+              nextDisabled={currentPage >= pageCount}
             />
           )}
         </div>
