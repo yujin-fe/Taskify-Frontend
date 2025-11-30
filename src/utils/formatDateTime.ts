@@ -16,6 +16,18 @@ export const formatDateTime = (datetime: string) => {
   return `${year}. ${month}. ${day} ${hours}:${minutes}`;
 };
 
-export const formatDueDate = (dueDate: string) => {
-  return dueDate ? dueDate.replace('T', ' ') : null;
-};
+export function formatDueDate(date?: string | Date | null) {
+  if (!date) {
+    return '';
+  }
+
+  const d = typeof date === 'string' ? new Date(date) : date;
+
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  const hh = String(d.getHours()).padStart(2, '0');
+  const min = String(d.getMinutes()).padStart(2, '0');
+
+  return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+}

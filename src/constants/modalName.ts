@@ -9,3 +9,4 @@ export const DELETE_COLUMN = 'deleteColumn';
 
 /** 카드 모달 */
 export const CREATE_CARD = 'createCard';
+export const CHANGE_CARD = 'changeCard';
