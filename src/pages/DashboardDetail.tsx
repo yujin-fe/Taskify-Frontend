@@ -6,14 +6,16 @@ import ColumnContainer from '@/components/dashboard-detail/column/ColumnContaine
 import ColumnInfoHeader from '@/components/dashboard-detail/column/ColumnInfoHeader';
 import ChangeColumnModal from '@/components/dashboard-detail/modal/ChangeColumnModal';
 import CreateColumnModal from '@/components/dashboard-detail/modal/CreateColumnModal';
+import DeleteColumnModal from '@/components/dashboard-detail/modal/DeleteColumnModal';
 import ColumnSkeleton from '@/components/skeleton/ColumnSkeleton';
-import { CHANGE_COLUMN, CREATE_COLUMN } from '@/constants/modalName';
+import { CHANGE_COLUMN, CREATE_COLUMN, DELETE_COLUMN } from '@/constants/modalName';
 import { useModal } from '@/hooks/useModal';
 import useMutation from '@/hooks/useMutation';
 import useQuery from '@/hooks/useQuery';
 import {
   changeColumn,
   createColumn,
+  deleteColumn,
   getColumnList,
   type ChangeColumnType,
   type CreateColumnType,
@@ -84,11 +86,13 @@ export default function DashboardDetail() {
 
   const createColumnModal = useModal(CREATE_COLUMN);
   const changeColumnModal = useModal(CHANGE_COLUMN);
+  const deleteColumnModal = useModal(DELETE_COLUMN);
 
   const {
     data: columnDataList,
     isLoading: isColumnLoading,
     setData: setColumnDataList,
+    refetch,
   } = useQuery<ColumnsResponse>({
     fetchFn: () => getColumnList(dashboardId || ''),
   });
@@ -148,6 +152,14 @@ export default function DashboardDetail() {
     },
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: (columnId: number) => deleteColumn(columnId),
+    onSuccess: () => {
+      refetch();
+      deleteColumnModal.handleModalClose();
+    },
+  });
+
   if (!dashboardId) {
     // TODO: 나중에 404 페이지로 리턴
     return <div>유효하지 않은 대시보드입니다.</div>;
@@ -193,6 +205,14 @@ export default function DashboardDetail() {
       columnId: selectedColumn.id,
       body: { title: nextTitle },
     });
+  };
+
+  const handleSubmitDeleteColumn = async () => {
+    if (!selectedColumn) {
+      return;
+    }
+
+    await deleteMutation.mutate(selectedColumn.id);
   };
 
   const canAddColumn = columnDataList.data.length < 10;
@@ -265,6 +285,18 @@ export default function DashboardDetail() {
           initialName={selectedColumn.title}
           serverErrorMessage={updateMutation.error}
           onSubmit={handleSubmitChangeColumn}
+          onDeleteModalOpen={() => {
+            deleteMutation.reset();
+            deleteColumnModal.handleModalOpenOnly();
+          }}
+        />
+      )}
+
+      {deleteColumnModal.isOpen && selectedColumn && (
+        <DeleteColumnModal
+          isLoading={deleteMutation.isLoading}
+          serverErrorMessage={deleteMutation.error}
+          onDelete={handleSubmitDeleteColumn}
         />
       )}
     </>

@@ -31,5 +31,20 @@ export const useModal = (modalName: string) => {
     });
   };
 
-  return { modalName, isOpen, handleModalOpen, handleModalClose };
+  const handleModalOpenOnly = () => {
+    setSearchParams({ [modalName]: 'true' });
+  };
+
+  const handleModalCloseAll = () => {
+    setSearchParams({});
+  };
+
+  return {
+    modalName,
+    isOpen,
+    handleModalOpen,
+    handleModalClose,
+    handleModalOpenOnly,
+    handleModalCloseAll,
+  };
 };

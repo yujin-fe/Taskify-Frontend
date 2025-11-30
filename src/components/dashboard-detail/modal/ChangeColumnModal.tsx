@@ -3,20 +3,20 @@ import Button from '@/components/common/Button';
 import Input from '@/components/common/input/Input';
 import FormModal from '@/components/common/modal/FormModal';
 import { CHANGE_COLUMN } from '@/constants/modalName';
-import { useModal } from '@/hooks/useModal';
 
 export interface ChangeColumnModalProps {
   initialName: string;
   onSubmit: (columnName: string) => Promise<void>;
   serverErrorMessage: string | null;
+  onDeleteModalOpen: () => void;
 }
 
 export default function ChangeColumnModal({
   initialName,
   onSubmit,
   serverErrorMessage,
+  onDeleteModalOpen,
 }: ChangeColumnModalProps) {
-  const { handleModalClose } = useModal(CHANGE_COLUMN);
   const [columnName, setColumnName] = useState(initialName);
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -52,8 +52,7 @@ export default function ChangeColumnModal({
           </Input>
         </FormModal.Body>
         <FormModal.Footer className='pt-[24px]'>
-          {/* TODO: 삭제 로직 추가 예정 */}
-          <Button theme={'outlined'} onClick={handleModalClose}>
+          <Button theme={'outlined'} onClick={onDeleteModalOpen}>
             삭제
           </Button>
           <Button theme={'primary'} type='submit' disabled={disabled}>
