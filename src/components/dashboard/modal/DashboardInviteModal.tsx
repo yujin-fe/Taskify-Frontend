@@ -53,7 +53,7 @@ export default function DashboardInviteModal({
       <FormModal.Form onSubmit={onSubmit}>
         <FormModal.Body>
           <Input value={inviteeEmail} onChange={handleChange} onBlur={handleBlur}>
-            <Input.Label className='font-lg-medium sm:font-2lg-medium'>이메일</Input.Label>
+            <Input.Label className='label-style'>이메일</Input.Label>
             <Input.Group>
               <Input.Field name='inviteeEmail' type='email' placeholder='이메일을 입력해주세요.' />
             </Input.Group>

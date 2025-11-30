@@ -39,7 +39,7 @@ export default function DashboardCreateModal() {
         <FormModal.Body>
           <div className='flex flex-col gap-[16px]'>
             <Input value={dashboardName} onChange={setDashboardName}>
-              <Input.Label className='font-lg-medium sm:font-2lg-medium'>대시보드 이름</Input.Label>
+              <Input.Label className='label-style'>대시보드 이름</Input.Label>
               <Input.Group>
                 <Input.Field
                   name='dashboardName'

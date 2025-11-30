@@ -1,7 +1,8 @@
 export type Assignee = {
   profileImageUrl: string | null;
   nickname: string;
-  id: number;
+  id?: number;
+  userId?: number;
 };
 
 export interface CardDetailResponse {
@@ -21,5 +22,14 @@ export interface CardDetailResponse {
 export interface CardsResponse {
   cards: CardDetailResponse[];
   totalCount: number;
-  cursorId: null;
+  cursorId: null | number;
+}
+
+export interface CardInitialValueType {
+  assigneeUser: Assignee | null;
+  title: string;
+  description: string;
+  dueDate: string;
+  tags: string[];
+  imageUrl: string | null;
 }

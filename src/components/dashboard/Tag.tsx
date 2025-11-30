@@ -3,7 +3,7 @@ import Icons from '@/assets/icons';
 import type { ColorTypes } from '@/constants/color';
 
 const tagStyles = cva(
-  'w-fit flex items-center px-1.5 py-1 rounded-sm font-xs-regular sm:py-0.5 sm:font-md-regular gap-2',
+  'w-fit flex shrink-0 items-center px-1.5 py-1 rounded-sm font-xs-regular sm:py-0.5 sm:font-md-regular gap-2',
   {
     variants: {
       color: {

@@ -44,7 +44,7 @@ export default function ChangeColumnModal({
       <FormModal.Form onSubmit={handleSubmit}>
         <FormModal.Body>
           <Input error={!!mergeError} value={columnName} onChange={setColumnName}>
-            <Input.Label className='font-lg-medium sm:font-2lg-medium'>이름</Input.Label>
+            <Input.Label className='label-style'>이름</Input.Label>
             <Input.Group>
               <Input.Field name='columnName' type='text' placeholder='컬럼 이름을 입력해 주세요' />
             </Input.Group>

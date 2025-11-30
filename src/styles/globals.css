@@ -30,7 +30,27 @@ input[type='datetime-local']::-webkit-calendar-picker-indicator {
 .scrollbar-hidden::-webkit-scrollbar {
   display: none;
 }
+
 .scrollbar-hidden {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+.scrollbar-thin-gray {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gray-200) transparent;
+}
+
+.scrollbar-thin-gray::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-thin-gray::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin-gray::-webkit-scrollbar-thumb {
+  background-color: var(--color-gray-200);
+  border-radius: 9999px;
 }

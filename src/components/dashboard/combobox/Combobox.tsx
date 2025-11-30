@@ -4,11 +4,13 @@ import ComboboxList from '@/components/dashboard/combobox/ComboboxList';
 import ComboboxTrigger from '@/components/dashboard/combobox/ComboboxTrigger';
 import ComboboxContext from '@/context/comboboxContext';
 import useComboboxState from '@/hooks/useComboboxState';
+import type { Assignee } from '@/types/card';
 
 interface ComboboxProps {
+  id: string;
   children: React.ReactNode;
-  value: string;
-  setValue: (value: string) => void;
+  value: Assignee | null;
+  setValue: (value: Assignee | null) => void;
 }
 
 /**
@@ -19,9 +21,9 @@ interface ComboboxProps {
  * 하위 컴포넌트에 Context 형태로 전달합니다.
  *
  * @example
- * const [value, setValue] = useState('');
+ * const [value, setValue] = useState<Assignee | null>(null);
  *
- * <Combobox value={value} setValue={setValue}>
+ * <Combobox id="assignee" value={value} setValue={setValue}>
  *   <Combobox.Trigger placeholder='담당자를 선택해주세요.' name='user' />
  *   <Combobox.List>
  *     <Combobox.Item value="홍길동">
@@ -30,12 +32,13 @@ interface ComboboxProps {
  *   </Combobox.List>
  * </Combobox>
  */
-export default function Combobox({ children, value, setValue }: ComboboxProps) {
+export default function Combobox({ id, children, value, setValue }: ComboboxProps) {
   const { isOpen, setIsOpen, searchQuery, setSearchQuery, selectedNode, setSelectedNode } =
     useComboboxState();
 
   const contextValue = useMemo(
     () => ({
+      id,
       selectedValue: value,
       setSelectedValue: setValue,
       isOpen,
@@ -45,7 +48,17 @@ export default function Combobox({ children, value, setValue }: ComboboxProps) {
       selectedNode,
       setSelectedNode,
     }),
-    [value, setValue, isOpen, setIsOpen, searchQuery, setSearchQuery, selectedNode, setSelectedNode]
+    [
+      id,
+      value,
+      setValue,
+      isOpen,
+      setIsOpen,
+      searchQuery,
+      setSearchQuery,
+      selectedNode,
+      setSelectedNode,
+    ]
   );
 
   return (

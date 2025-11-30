@@ -5,13 +5,15 @@ import DashboardCard from '@/components/dashboard-detail/card/DashboardCard';
 import ColumnContainer from '@/components/dashboard-detail/column/ColumnContainer';
 import ColumnInfoHeader from '@/components/dashboard-detail/column/ColumnInfoHeader';
 import ChangeColumnModal from '@/components/dashboard-detail/modal/ChangeColumnModal';
+import CreateCardModal from '@/components/dashboard-detail/modal/CreateCardModal';
 import CreateColumnModal from '@/components/dashboard-detail/modal/CreateColumnModal';
 import DeleteColumnModal from '@/components/dashboard-detail/modal/DeleteColumnModal';
 import ColumnSkeleton from '@/components/skeleton/ColumnSkeleton';
-import { CHANGE_COLUMN, CREATE_COLUMN, DELETE_COLUMN } from '@/constants/modalName';
+import { CHANGE_COLUMN, CREATE_CARD, CREATE_COLUMN, DELETE_COLUMN } from '@/constants/modalName';
 import { useModal } from '@/hooks/useModal';
 import useMutation from '@/hooks/useMutation';
 import useQuery from '@/hooks/useQuery';
+import { createCard, type CreateCardType } from '@/lib/apis/cards';
 import {
   changeColumn,
   createColumn,
@@ -20,57 +22,38 @@ import {
   type ChangeColumnType,
   type CreateColumnType,
 } from '@/lib/apis/columns';
+import { getMemberList } from '@/lib/apis/members';
+import type { CardInitialValueType, CardsResponse } from '@/types/card';
 import type { ColumnsData, ColumnsResponse } from '@/types/column';
+import type { MembersResponse } from '@/types/members';
+import { createCardRequestBody } from '@/utils/card/createCardReqBody';
+import { uploadCardImage } from '@/utils/card/uploadCardImage';
 import { cn } from '@/utils/cn';
 
 // TODO: 실제 데이터 연결 필요
-const cardDataArray = [
+const cardDataArray: CardsResponse[] = [
   {
-    id: 101,
-    title: 'Taskify 웹페이지 디자인 리뉴얼',
-    description:
-      '기존 디자인을 개선하고, 반응형 웹과 모바일 대응을 추가하여 사용자 경험을 향상시킵니다.',
-    tags: ['디자인', '프론트엔드', 'UI/UX'],
-    dueDate: null,
-    assignee: {
-      id: 6373,
-      nickname: '홍길동',
-      profileImageUrl:
-        'https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/taskify/profile_image/19-7_6373_1764392042711.png',
-    },
-    imageUrl:
-      'https://file.daesoon.org/webzine/307/202212191656_Daesoon_263_%EB%AC%B8%ED%99%94%EC%82%B0%EC%B1%85_%EC%A0%84%EA%B2%BD%20%EC%86%8D%20%EB%8F%99%EB%AC%BC%20%EA%B3%A0%EC%96%91.jpg',
-    teamId: 'team-01',
-    columnId: 5,
-    createdAt: '2025-11-01T09:15:30.000Z',
-    updatedAt: '2025-11-25T15:42:10.000Z',
-  },
-  {
-    id: 102,
-    title: 'Taskify 백엔드 API 개발',
-    description: '새로운 API 엔드포인트를 설계하고, 기존 데이터베이스 구조와 통합합니다.',
-    tags: [
-      '백엔드',
-      'API',
-      '데이터베이스',
-      '백엔드',
-      'API',
-      '데이터베이스',
-      '백엔드',
-      'API',
-      '데이터베이스',
+    cursorId: 0,
+    totalCount: 0,
+    cards: [
+      {
+        id: 0,
+        title: 'string',
+        description: 'string',
+        tags: ['string'],
+        dueDate: 'string',
+        assignee: {
+          profileImageUrl: 'string',
+          nickname: 'string',
+          id: 0,
+        },
+        imageUrl: null,
+        teamId: 'string',
+        columnId: 0,
+        createdAt: '2025-11-30T08:11:06.569Z',
+        updatedAt: '2025-11-30T08:11:06.569Z',
+      },
     ],
-    dueDate: '2025-12-15',
-    assignee: {
-      id: 6374,
-      nickname: '김철수',
-      profileImageUrl: null,
-    },
-    imageUrl: null,
-    teamId: 'team-01',
-    columnId: 5,
-    createdAt: '2025-11-05T11:30:45.000Z',
-    updatedAt: '2025-11-28T14:20:10.000Z',
   },
 ];
 
@@ -84,9 +67,13 @@ export default function DashboardDetail() {
   const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
   const [selectedColumn, setSelectedColumn] = useState<ColumnsData | null>(null);
 
+  // 컬럼 모달
   const createColumnModal = useModal(CREATE_COLUMN);
   const changeColumnModal = useModal(CHANGE_COLUMN);
   const deleteColumnModal = useModal(DELETE_COLUMN);
+
+  // 카드 모달
+  const createCardModal = useModal(CREATE_CARD);
 
   const {
     data: columnDataList,
@@ -95,9 +82,15 @@ export default function DashboardDetail() {
     refetch,
   } = useQuery<ColumnsResponse>({
     fetchFn: () => getColumnList(dashboardId || ''),
+    params: { dashboardId },
   });
 
-  const createMutation = useMutation<ColumnsData, CreateColumnType>({
+  const { data: memberData } = useQuery<MembersResponse>({
+    fetchFn: () => getMemberList({ dashboardId: dashboardId ?? '' }),
+  });
+
+  // column mutation
+  const createColumnMutation = useMutation<ColumnsData, CreateColumnType>({
     mutationFn: (reqBody) => createColumn(reqBody),
     onSuccess: (response) => {
       if (!response) {
@@ -121,7 +114,7 @@ export default function DashboardDetail() {
     },
   });
 
-  const updateMutation = useMutation<ColumnsData, ChangeColumnVariables>({
+  const updateColumnMutation = useMutation<ColumnsData, ChangeColumnVariables>({
     mutationFn: ({ columnId, body }) => changeColumn(columnId, body),
     onSuccess: (updated) => {
       if (!updated) {
@@ -152,11 +145,20 @@ export default function DashboardDetail() {
     },
   });
 
-  const deleteMutation = useMutation({
+  const deleteColumnMutation = useMutation({
     mutationFn: (columnId: number) => deleteColumn(columnId),
     onSuccess: () => {
       refetch();
       deleteColumnModal.handleModalClose();
+    },
+  });
+
+  // card mutation
+  const createCardMutation = useMutation({
+    mutationFn: (reqBody: CreateCardType) => createCard(reqBody),
+    onSuccess: () => {
+      // TODO: 카드 데이터에 업데이트 필요
+      createCardModal.handleModalClose();
     },
   });
 
@@ -165,7 +167,7 @@ export default function DashboardDetail() {
     return <div>유효하지 않은 대시보드입니다.</div>;
   }
 
-  if (isColumnLoading || !columnDataList) {
+  if (isColumnLoading || !columnDataList || !memberData) {
     return (
       <div className='flex flex-col md:flex-row'>
         {Array.from({ length: 3 }).map((_, i) => (
@@ -175,6 +177,7 @@ export default function DashboardDetail() {
     );
   }
 
+  // column handler
   const handleSubmitCreateColumn = async (columnName: string) => {
     const isDuplicate = columnDataList.data.some((col) => col.title.trim() === columnName.trim());
 
@@ -182,7 +185,7 @@ export default function DashboardDetail() {
       throw new Error('중복된 컬럼 이름입니다.');
     }
 
-    await createMutation.mutate({
+    await createColumnMutation.mutate({
       title: columnName,
       dashboardId: Number(dashboardId),
     });
@@ -201,7 +204,7 @@ export default function DashboardDetail() {
       throw new Error('중복된 컬럼 이름입니다.');
     }
 
-    await updateMutation.mutate({
+    await updateColumnMutation.mutate({
       columnId: selectedColumn.id,
       body: { title: nextTitle },
     });
@@ -212,7 +215,20 @@ export default function DashboardDetail() {
       return;
     }
 
-    await deleteMutation.mutate(selectedColumn.id);
+    await deleteColumnMutation.mutate(selectedColumn.id);
+  };
+
+  // card handler
+  const handleSubmitCreateCard = async (
+    formValue: CardInitialValueType,
+    imageFile: File | null
+  ) => {
+    if (!selectedColumn) {
+      return;
+    }
+    const imageUrl = await uploadCardImage(selectedColumn.id, imageFile);
+    const reqBody = createCardRequestBody(formValue, selectedColumn.id, dashboardId, imageUrl);
+    await createCardMutation.mutate(reqBody);
   };
 
   const canAddColumn = columnDataList.data.length < 10;
@@ -229,16 +245,22 @@ export default function DashboardDetail() {
                 totalCount={5}
                 onClick={() => {
                   setSelectedColumn(column);
-                  updateMutation.reset();
+                  updateColumnMutation.reset();
                   changeColumnModal.handleModalOpen();
                 }}
               />
               <div className='flex flex-col gap-[16px]'>
-                <CreateButton onClick={() => console.log('할일 생성 모달')} />
+                <CreateButton
+                  onClick={() => {
+                    setSelectedColumn(column);
+                    createCardMutation.reset();
+                    createCardModal.handleModalOpen();
+                  }}
+                />
                 {/* TODO: 실제 데이터 연결 및 함수 연결 */}
-                {cardDataArray.map((card) => (
-                  <DashboardCard key={card.id} cardData={card} />
-                ))}
+                {cardDataArray.flatMap((c) =>
+                  c.cards.map((card) => <DashboardCard key={card.id} cardData={card} />)
+                )}
               </div>
             </ColumnContainer>
           ))}
@@ -249,7 +271,7 @@ export default function DashboardDetail() {
             <CreateButton
               className='mx-[20px] mt-[68px] hidden w-[354px] shrink-0 font-2lg-bold md:flex'
               onClick={() => {
-                createMutation.reset();
+                createColumnMutation.reset();
                 createColumnModal.handleModalOpen();
               }}>
               새로운 컬럼 추가하기
@@ -264,7 +286,7 @@ export default function DashboardDetail() {
               <CreateButton
                 className='h-[70px] w-full shrink-0 font-2lg-bold'
                 onClick={() => {
-                  createMutation.reset();
+                  createColumnMutation.reset();
                   createColumnModal.handleModalOpen();
                 }}>
                 새로운 컬럼 추가하기
@@ -275,7 +297,7 @@ export default function DashboardDetail() {
       </div>
       {createColumnModal.isOpen && (
         <CreateColumnModal
-          serverErrorMessage={createMutation.error}
+          serverErrorMessage={createColumnMutation.error}
           onSubmit={handleSubmitCreateColumn}
         />
       )}
@@ -283,10 +305,10 @@ export default function DashboardDetail() {
       {changeColumnModal.isOpen && selectedColumn && (
         <ChangeColumnModal
           initialName={selectedColumn.title}
-          serverErrorMessage={updateMutation.error}
+          serverErrorMessage={updateColumnMutation.error}
           onSubmit={handleSubmitChangeColumn}
           onDeleteModalOpen={() => {
-            deleteMutation.reset();
+            deleteColumnMutation.reset();
             deleteColumnModal.handleModalOpenOnly();
           }}
         />
@@ -294,9 +316,16 @@ export default function DashboardDetail() {
 
       {deleteColumnModal.isOpen && selectedColumn && (
         <DeleteColumnModal
-          isLoading={deleteMutation.isLoading}
-          serverErrorMessage={deleteMutation.error}
+          isLoading={deleteColumnMutation.isLoading}
+          serverErrorMessage={deleteColumnMutation.error}
           onDelete={handleSubmitDeleteColumn}
+        />
+      )}
+      {createCardModal.isOpen && (
+        <CreateCardModal
+          serverErrorMessage={createCardMutation.error}
+          onSubmit={handleSubmitCreateCard}
+          memberData={memberData}
         />
       )}
     </>

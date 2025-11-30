@@ -16,4 +16,6 @@ export const formatDateTime = (datetime: string) => {
   return `${year}. ${month}. ${day} ${hours}:${minutes}`;
 };
 
-export default formatDateTime;
+export const formatDueDate = (dueDate: string) => {
+  return dueDate ? dueDate.replace('T', ' ') : null;
+};

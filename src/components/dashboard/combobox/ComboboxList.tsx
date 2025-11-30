@@ -11,7 +11,7 @@ export default function ComboboxList({ children }: { children: React.ReactNode }
       return true;
     }
     const itemValue = (child.props as ComboboxItemProps).value || '';
-    return matchSearch(itemValue, searchQuery);
+    return matchSearch(itemValue.nickname, searchQuery);
   });
 
   if (!isOpen) {

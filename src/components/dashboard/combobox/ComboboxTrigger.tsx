@@ -31,7 +31,7 @@ interface ComboboxTriggerProps {
 }
 
 export default function ComboboxTrigger({ placeholder, name }: ComboboxTriggerProps) {
-  const { isOpen, setIsOpen, searchQuery, setSearchQuery, selectedNode } = useComboboxContext();
+  const { id, isOpen, setIsOpen, searchQuery, setSearchQuery, selectedNode } = useComboboxContext();
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -54,6 +54,7 @@ export default function ComboboxTrigger({ placeholder, name }: ComboboxTriggerPr
     return (
       <ComboboxTriggerContainer isOpen={true} onClick={handleTriggerClick}>
         <input
+          id={id}
           ref={inputRef}
           type='text'
           name={name}
@@ -70,6 +71,21 @@ export default function ComboboxTrigger({ placeholder, name }: ComboboxTriggerPr
 
   return (
     <ComboboxTriggerContainer isOpen={false} onClick={handleTriggerClick}>
+      <input
+        id={id}
+        ref={inputRef}
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className='sr-only'
+        onFocus={() => {
+          if (!isOpen) {
+            setIsOpen(true);
+            setSearchQuery('');
+          }
+        }}
+        tabIndex={-1}
+      />
+
       {selectedNode ? (
         <div className='flex items-center gap-2'>{selectedNode}</div>
       ) : (
