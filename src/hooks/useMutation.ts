@@ -43,11 +43,18 @@ const useMutation = <TData = unknown, TVariables = unknown>({
     }
   };
 
+  const reset = () => {
+    setData(null);
+    setError(null);
+    setIsLoading(false);
+  };
+
   return {
     mutate,
     data,
     error,
     isLoading,
+    reset,
   };
 };
 

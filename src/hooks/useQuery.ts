@@ -36,7 +36,7 @@ const useQuery = <TData, TParams = object>({ fetchFn, params }: UseQueryType<TDa
     fetchData();
   }, [JSON.stringify(params)]);
 
-  return { data, isLoading, error, refetch: fetchData };
+  return { data, setData, isLoading, error, refetch: fetchData };
 };
 
 export default useQuery;

@@ -2,35 +2,34 @@ import { useEffect, useState } from 'react';
 import Button from '@/components/common/Button';
 import Input from '@/components/common/input/Input';
 import FormModal from '@/components/common/modal/FormModal';
-import { CREATE_COLUMN } from '@/constants/modalName';
+import { CHANGE_COLUMN } from '@/constants/modalName';
 import { useModal } from '@/hooks/useModal';
 
-interface CreateColumnModalProps {
+export interface ChangeColumnModalProps {
+  initialName: string;
   onSubmit: (columnName: string) => Promise<void>;
   serverErrorMessage: string | null;
 }
 
-export default function CreateColumnModal({
+export default function ChangeColumnModal({
+  initialName,
   onSubmit,
   serverErrorMessage,
-}: CreateColumnModalProps) {
-  const { handleModalClose } = useModal(CREATE_COLUMN);
-  const [columnName, setColumnName] = useState('');
+}: ChangeColumnModalProps) {
+  const { handleModalClose } = useModal(CHANGE_COLUMN);
+  const [columnName, setColumnName] = useState(initialName);
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    return () => {
-      setColumnName('');
-      setErrorMessage('');
-    };
-  }, []);
+    setColumnName(initialName);
+  }, [initialName]);
 
   const handleSubmit = async () => {
     setErrorMessage('');
     try {
       await onSubmit(columnName);
     } catch (err: unknown) {
-      const msg = (err instanceof Error && err.message) || '컬럼 생성 중 오류가 발생했습니다.';
+      const msg = (err instanceof Error && err.message) || '컬럼 수정 중 오류가 발생했습니다.';
 
       setErrorMessage(msg);
     }
@@ -40,8 +39,8 @@ export default function CreateColumnModal({
   const mergeError = errorMessage || serverErrorMessage;
 
   return (
-    <FormModal modalName={CREATE_COLUMN}>
-      <FormModal.Title title='새 컬럼 생성' />
+    <FormModal modalName={CHANGE_COLUMN} closeBtn>
+      <FormModal.Title title='컬럼 관리' />
       <FormModal.Form onSubmit={handleSubmit}>
         <FormModal.Body>
           <Input error={!!mergeError} value={columnName} onChange={setColumnName}>
@@ -53,11 +52,12 @@ export default function CreateColumnModal({
           </Input>
         </FormModal.Body>
         <FormModal.Footer className='pt-[24px]'>
+          {/* TODO: 삭제 로직 추가 예정 */}
           <Button theme={'outlined'} onClick={handleModalClose}>
-            취소
+            삭제
           </Button>
           <Button theme={'primary'} type='submit' disabled={disabled}>
-            생성
+            변경
           </Button>
         </FormModal.Footer>
       </FormModal.Form>
