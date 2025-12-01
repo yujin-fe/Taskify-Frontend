@@ -7,7 +7,7 @@ import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import { useModal } from '@/hooks/useModal';
 import useMutation from '@/hooks/useMutation';
 import useUserContext from '@/hooks/useUserContext';
-import { createCard, getCardData, type CreateCardType } from '@/lib/apis/cards';
+import { createCard, getCardListData, type CreateCardType } from '@/lib/apis/cards';
 import type { CardInitialValueType, CardsResponse } from '@/types/card';
 import type { ColumnsData } from '@/types/column';
 import type { MembersResponse } from '@/types/members';
@@ -40,7 +40,7 @@ export default function ColumnCardList({
     error,
     lastItemRef,
   } = useInfiniteScroll<CardsResponse, { size: number; columnId: number }>({
-    fetchFn: (params) => getCardData(params),
+    fetchFn: (params) => getCardListData(params),
     params: { size: CARD_LIST_SIZE, columnId: column.id },
     onSuccess: (prev, next) => {
       if (!prev) {
@@ -123,7 +123,7 @@ export default function ColumnCardList({
           const isLast = index === cards.length - 1;
           return (
             <li key={card.id} ref={isLast ? lastItemRef : undefined}>
-              <DashboardCard cardData={card} />
+              <DashboardCard columnId={column.id} cardData={card} />
             </li>
           );
         })}

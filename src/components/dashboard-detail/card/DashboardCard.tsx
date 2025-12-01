@@ -10,9 +10,10 @@ import { getProfileColorForId } from '@/utils/avatar';
 
 interface DashboardCardProps {
   cardData: CardDetailResponse;
+  columnId: number;
 }
 
-export default function DashboardCard({ cardData }: DashboardCardProps) {
+export default function DashboardCard({ cardData, columnId }: DashboardCardProps) {
   const { imageUrl, tags, title, dueDate, assignee } = cardData;
   const [isImageError, setIsImageError] = useState(false);
   const modal = useModal(`cardDetail_${cardData.id}`);
@@ -61,7 +62,13 @@ export default function DashboardCard({ cardData }: DashboardCardProps) {
           </div>
         </div>
       </div>
-      {modal.isOpen && <CardDetailModal closeModal={modal.handleModalClose} />}
+      {modal.isOpen && (
+        <CardDetailModal
+          cardId={cardData.id}
+          columnId={columnId}
+          closeModal={modal.handleModalClose}
+        />
+      )}
     </>
   );
 }

@@ -14,7 +14,7 @@ export interface CreateCardType extends ChangeCardType {
   dashboardId: number;
 }
 
-interface GetCardDataParams {
+interface GetCardListDataParams {
   size: number;
   cursorId?: null | number;
   columnId: number;
@@ -35,7 +35,7 @@ export const cardUploadImageFile = (columnId: number) => async (image: FormData)
 };
 
 /** 카드 목록 조회 api */
-export const getCardData = async (params: GetCardDataParams) => {
+export const getCardListData = async (params: GetCardListDataParams) => {
   const { size = 10, columnId, cursorId = null } = params;
   const res = await api.get('/cards', {
     params: {
