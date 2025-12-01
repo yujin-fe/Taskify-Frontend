@@ -5,7 +5,9 @@ import CardDetailModalDesktop from '@/components/dashboard-detail/modal/card-det
 import CardDetailModalMobile from '@/components/dashboard-detail/modal/card-detail-modal/CardDetailModalMobile';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import useMutation from '@/hooks/useMutation';
+import useQuery from '@/hooks/useQuery';
 import { useResponsiveValue } from '@/hooks/useResponsiveValue';
+import { getCardDetail } from '@/lib/apis/cards';
 import {
   updateComment,
   createComment,
@@ -13,10 +15,13 @@ import {
   getCommentList,
   type CreateCommentType,
 } from '@/lib/apis/comments';
+import type { CardDetailResponse } from '@/types/card';
 import type { Comment, CommentListResponse } from '@/types/comment';
 import type { InfiniteScrollReturn } from '@/types/infiniteScroll';
 
 export interface CardDetailModalContentProps {
+  cardData: CardDetailResponse | null;
+  columnTitle: string;
   comment: string;
   commentList: InfiniteScrollReturn<CommentListResponse>;
   setComment: React.Dispatch<React.SetStateAction<string>>;
@@ -30,18 +35,29 @@ export interface CardDetailModalContentProps {
 
 interface CardDetailModal {
   columnId: number;
+  columnTitle: string;
   cardId: number;
   closeModal: () => void;
 }
 
 const COMMENT_LIST_SIZE = 5;
 
-export default function CardDetailModal({ closeModal, columnId, cardId }: CardDetailModal) {
+export default function CardDetailModal({
+  closeModal,
+  columnTitle,
+  columnId,
+  cardId,
+}: CardDetailModal) {
   const { dashboardId } = useParams();
   const [comment, setComment] = useState('');
   const isDesktop = useResponsiveValue({
     mobile: false,
     desktop: true,
+  });
+
+  const cardDetailQuery = useQuery<CardDetailResponse, { cardId: number }>({
+    fetchFn: () => getCardDetail(cardId),
+    params: { cardId },
   });
 
   const commentList = useInfiniteScroll<
@@ -149,6 +165,8 @@ export default function CardDetailModal({ closeModal, columnId, cardId }: CardDe
       <div className='modal-dimmed'>
         {isDesktop ? (
           <CardDetailModalDesktop
+            columnTitle={columnTitle}
+            cardData={cardDetailQuery.data}
             commentList={commentList}
             comment={comment}
             setComment={setComment}
@@ -161,6 +179,8 @@ export default function CardDetailModal({ closeModal, columnId, cardId }: CardDe
           />
         ) : (
           <CardDetailModalMobile
+            columnTitle={columnTitle}
+            cardData={cardDetailQuery.data}
             commentList={commentList}
             comment={comment}
             setComment={setComment}

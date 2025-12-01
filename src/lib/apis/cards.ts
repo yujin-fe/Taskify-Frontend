@@ -52,3 +52,9 @@ export const changeCard = async (cardId: number, reqBody: ChangeCardType) => {
   const res = await api.put(`/cards/${cardId}`, reqBody);
   return res;
 };
+
+/** 카드 상세 조회 api */
+export const getCardDetail = async (cardId: number) => {
+  const res = await api.get(`/cards/${cardId}`);
+  return res.data;
+};

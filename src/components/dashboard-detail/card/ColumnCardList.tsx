@@ -123,7 +123,7 @@ export default function ColumnCardList({
           const isLast = index === cards.length - 1;
           return (
             <li key={card.id} ref={isLast ? lastItemRef : undefined}>
-              <DashboardCard columnId={column.id} cardData={card} />
+              <DashboardCard columnTitle={column.title} columnId={column.id} cardData={card} />
             </li>
           );
         })}
