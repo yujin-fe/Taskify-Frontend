@@ -1,29 +1,39 @@
+import axios from 'axios';
 import { useState } from 'react';
 import Icons from '@/assets/icons';
 import notInvited from '@/assets/images/dashboard/no-invited-dashboard.png';
 import Button from '@/components/common/Button';
 import Input from '@/components/common/input/Input';
+import BaseModalFrame from '@/components/common/modal/BaseModalFrame';
 import Title from '@/components/common/Title';
 import DashboardHeader from '@/components/dashboard/table/DashboardHeader';
+import useBaseModal from '@/hooks/useBaseModal';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
+import useMutation from '@/hooks/useMutation';
 import { useResponsiveValue } from '@/hooks/useResponsiveValue';
-import { getMyInvitations } from '@/lib/apis/Invitations';
+import { getMyInvitations, responseInvtitation } from '@/lib/apis/Invitations';
 import type { InvitationParams, Invitation, MyInvitationResponse } from '@/types/invitations';
 const INVITATION_LIST_SIZE = 7;
 
+interface ResponseInvitationReqType {
+  invitationId: string;
+  reqBody: { inviteAccepted: boolean };
+}
 export default function InvitedDashboard() {
   const [search, setSearch] = useState<null | string>(null);
+  const [confirmMessage, setConfirmMessage] = useState('');
   const isMobile = useResponsiveValue({
     mobile: true,
     tablet: false,
     desktop: false,
   });
+  const { isOpen, handleModalClose, handleModalOpen } = useBaseModal();
 
   const params: InvitationParams = {
     size: INVITATION_LIST_SIZE,
   };
 
-  const onSuccess = (prevData: MyInvitationResponse | null, newData: MyInvitationResponse) => {
+  const getSuccess = (prevData: MyInvitationResponse | null, newData: MyInvitationResponse) => {
     if (!prevData) {
       return newData;
     }
@@ -36,7 +46,11 @@ export default function InvitedDashboard() {
   const { data, error, setData, resetData, lastItemRef } = useInfiniteScroll({
     fetchFn: (params) => getMyInvitations(params),
     params,
-    onSuccess,
+    onSuccess: getSuccess,
+  });
+
+  const { mutate } = useMutation<Invitation, ResponseInvitationReqType>({
+    mutationFn: ({ invitationId, reqBody }) => responseInvtitation(invitationId, reqBody),
   });
 
   const handleSearch = (value: string) => {
@@ -60,8 +74,10 @@ export default function InvitedDashboard() {
       });
       setData(data);
     } catch (error) {
-      console.error(error);
-      //TODO: 에러처리
+      if (axios.isAxiosError(error)) {
+        setConfirmMessage(`${error?.response?.data?.message}: 오류가 발생했습니다.`);
+        handleModalOpen();
+      }
     }
   };
 
@@ -73,6 +89,26 @@ export default function InvitedDashboard() {
   if (!data) {
     return null;
   }
+
+  const handleResponse = async (invitation: Invitation, inviteAccepted: boolean) => {
+    const invitationId: string = invitation.id.toString();
+    const reqBody = {
+      inviteAccepted,
+    };
+    try {
+      setConfirmMessage(
+        `${invitation.dashboard.title} 초대를 ${inviteAccepted ? '수락' : '거절'}했습니다!`
+      );
+      handleModalOpen();
+      await mutate({ invitationId, reqBody });
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        setConfirmMessage(`${error?.response?.data?.message}: 오류가 발생했습니다.`);
+        handleModalOpen();
+      }
+    }
+  };
+
   const invitations: Invitation[] = data.invitations;
 
   const nullList = () => {
@@ -110,10 +146,17 @@ export default function InvitedDashboard() {
               </div>
             </div>
             <div className='flex w-full gap-2.5'>
-              <Button size={'sm'} className='flex flex-1'>
+              <Button
+                size={'sm'}
+                className='flex flex-1'
+                onClick={() => handleResponse(invitation, true)}>
                 수락
               </Button>
-              <Button theme={'secondary'} size={'sm'} className='flex flex-1'>
+              <Button
+                theme={'secondary'}
+                size={'sm'}
+                className='flex flex-1'
+                onClick={() => handleResponse(invitation, false)}>
                 거절
               </Button>
             </div>
@@ -123,7 +166,7 @@ export default function InvitedDashboard() {
     );
   };
 
-  return invitations.length === 0 && search === null ? (
+  return !isOpen && invitations.length === 0 && search === null ? (
     nullList()
   ) : (
     <>
@@ -179,13 +222,15 @@ export default function InvitedDashboard() {
                   <div className='flex w-[154px] gap-[10px] lg:w-[178px]'>
                     <Button
                       size={'sm'}
-                      className='max-md:font-14-medium flex-none max-md:h-[30px] max-md:min-w-[72px] max-md:p-0'>
+                      className='max-md:font-14-medium flex-none max-md:h-[30px] max-md:min-w-[72px] max-md:p-0'
+                      onClick={() => handleResponse(invitation, true)}>
                       수락
                     </Button>
                     <Button
                       theme={'secondary'}
                       size={'sm'}
-                      className='max-md:font-14-medium flex-none max-md:h-[30px] max-md:min-w-[72px] max-md:p-0'>
+                      className='max-md:font-14-medium flex-none max-md:h-[30px] max-md:min-w-[72px] max-md:p-0'
+                      onClick={() => handleResponse(invitation, false)}>
                       거절
                     </Button>
                   </div>
@@ -195,6 +240,15 @@ export default function InvitedDashboard() {
           </ul>
         </div>
       </div>
+      {isOpen && (
+        <BaseModalFrame
+          setOnModal={() => {
+            handleModalClose();
+            resetData();
+          }}>
+          {confirmMessage}
+        </BaseModalFrame>
+      )}
     </>
   );
 }
