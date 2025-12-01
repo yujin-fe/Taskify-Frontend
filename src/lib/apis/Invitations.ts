@@ -21,3 +21,15 @@ export const getInvitationList = async (params: {
 
   return res.data;
 };
+
+/** 대시보드 초대 취소 함수 */
+export interface DeleteInvitationParams {
+  dashboardId: number;
+  invitationId: number;
+}
+
+export const deleteInvitationdata = async (dashboardId: number, invitationId: number) => {
+  const res = await api.delete(`/dashboards/${dashboardId}/invitations/${invitationId}`);
+
+  return res;
+};
