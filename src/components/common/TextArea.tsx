@@ -13,7 +13,7 @@ export default function TextArea({ className, value, onChange, error, ...props }
     <div className='flex max-w-[520px] flex-col gap-1'>
       <textarea
         className={cn(
-          'bg-white min-h-[126px] w-full resize-none rounded-lg border border-gray-300 px-4 py-3',
+          'bg-white h-[126px] w-full resize-none rounded-lg border border-gray-300 px-4 py-3',
           'text-gray-900 placeholder:font-lg-regular placeholder:text-gray-400',
           'focus:border-primary focus:outline-none',
           error && 'border-red-500',

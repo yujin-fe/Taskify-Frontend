@@ -67,7 +67,7 @@ function Root({
     <CommentContext value={contextValue}>
       <form
         onSubmit={handleSubmit}
-        className={cn('relative flex max-w-[520px] flex-col gap-4', className)}>
+        className={cn('relative flex w-full max-w-[520px] flex-col gap-[4px]', className)}>
         {children}
       </form>
     </CommentContext>
@@ -86,7 +86,7 @@ function Title({ children = '댓글', className, required }: TitleProps) {
     <Label
       htmlFor={textAreaId}
       required={required}
-      className={cn('font-lg-bold text-gray-700', className)}>
+      className={cn('font-md-medium text-gray-700 sm:font-lg-medium', className)}>
       {children}
     </Label>
   );
@@ -94,21 +94,20 @@ function Title({ children = '댓글', className, required }: TitleProps) {
 
 type FieldProps = {
   className?: string;
-  textareaClassName?: string;
 };
 
-function Field({ className, textareaClassName }: FieldProps) {
+function Field({ className }: FieldProps) {
   const { value, onChange, placeholder, textAreaId } = useCommentContext();
 
   return (
-    <fieldset className={cn('relative flex flex-col border-0 p-0', className)}>
+    <fieldset className={cn('flex flex-col border-0 p-0 sm:h-[110px]', className)}>
       <legend className='sr-only'>댓글 입력</legend>
       <TextArea
         id={textAreaId}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className={cn('pr-14 pb-12', textareaClassName)}
+        className='scrollbar-hidden h-[70px] pr-[110px] font-xs-regular placeholder:font-xs-regular sm:h-[110px] sm:pr-[85px] sm:pb-12 sm:font-md-regular sm:placeholder:font-lg-regular'
       />
     </fieldset>
   );
@@ -123,11 +122,15 @@ function Submit({ children = '입력', className }: SubmitProps) {
   const { disabled } = useCommentContext();
   return (
     <Button
-      theme='primary'
+      theme='secondary'
       size='sm'
       type='submit'
       disabled={disabled}
-      className={cn('absolute right-3 bottom-3', className)}>
+      className={cn(
+        'absolute right-[12px] bottom-[12px]',
+        'disabled:bg-gray-200 disabled:text-gray-400',
+        className
+      )}>
       {children}
     </Button>
   );

@@ -4,7 +4,7 @@ import { AvatarContext } from '@/context/avatarContext';
 import { getMonogram, getProfileColorForId } from '@/utils/avatar';
 
 const AvatarFallbackStyle = cva(
-  'font-md-regular flex items-center justify-center w-full h-full text-gray-0 select-none',
+  'font-sm-medium sm:font-md-regular flex items-center justify-center w-full h-full text-gray-0 select-none',
   {
     variants: {
       color: {

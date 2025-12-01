@@ -19,7 +19,9 @@ import {
   type ChangeColumnType,
   type CreateColumnType,
 } from '@/lib/apis/columns';
+import { getMemberList } from '@/lib/apis/members';
 import type { ColumnsData, ColumnsResponse } from '@/types/column';
+import type { MembersResponse } from '@/types/members';
 import { cn } from '@/utils/cn';
 
 interface ChangeColumnVariables {
@@ -39,6 +41,11 @@ export default function DashboardDetail() {
 
   const columnQuery = useQuery<ColumnsResponse>({
     fetchFn: () => getColumnList(dashboardId || ''),
+    params: { dashboardId },
+  });
+
+  const memberQuery = useQuery<MembersResponse>({
+    fetchFn: () => getMemberList({ dashboardId: dashboardId || '' }),
     params: { dashboardId },
   });
 
@@ -174,15 +181,12 @@ export default function DashboardDetail() {
             <ColumnContainer key={column.id}>
               <ColumnCardList
                 dashboardId={dashboardId}
-                selectedColumn={selectedColumn}
+                memberData={memberQuery.data}
                 column={column}
                 onHeaderClick={() => {
                   setSelectedColumn(column);
                   updateColumnMutation.reset();
                   changeColumnModal.handleModalOpen();
-                }}
-                onCreateCardClick={() => {
-                  setSelectedColumn(column);
                 }}
               />
             </ColumnContainer>

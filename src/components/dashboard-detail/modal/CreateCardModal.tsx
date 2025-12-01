@@ -8,15 +8,15 @@ import FormModal from '@/components/common/modal/FormModal';
 import TextArea from '@/components/common/TextArea';
 import Combobox from '@/components/dashboard/combobox/Combobox';
 import TagInput from '@/components/dashboard-detail/modal/TagInput';
-import { CREATE_CARD } from '@/constants/modalName';
 import { useModal } from '@/hooks/useModal';
 import type { Assignee, CardInitialValueType } from '@/types/card';
 import type { MembersResponse } from '@/types/members';
 
 interface CreateCardModalProps {
   memberData: MembersResponse;
-  onSubmit: (formValue: CardInitialValueType, imageFile: File | null) => Promise<void>;
+  modalName: string;
   serverErrorMessage: string | null;
+  onSubmit: (formValue: CardInitialValueType, imageFile: File | null) => Promise<void>;
 }
 
 const initialValue: CardInitialValueType = {
@@ -30,10 +30,11 @@ const initialValue: CardInitialValueType = {
 
 export default function CreateCardModal({
   memberData,
-  onSubmit,
+  modalName,
   serverErrorMessage,
+  onSubmit,
 }: CreateCardModalProps) {
-  const { handleModalClose } = useModal(CREATE_CARD);
+  const { handleModalClose } = useModal(modalName);
   const [formValue, setFormValue] = useState(initialValue);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [errorMessage, setErrorMessage] = useState('');
@@ -54,7 +55,7 @@ export default function CreateCardModal({
   const isDisabled = formValue.title.trim() === '' || formValue.description.trim() === '';
 
   return (
-    <FormModal modalName={CREATE_CARD}>
+    <FormModal modalName={modalName}>
       <FormModal.Title title='할 일 생성' />
       <FormModal.Form onSubmit={handleCardSubmit}>
         <FormModal.Body>

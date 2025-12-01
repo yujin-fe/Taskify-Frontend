@@ -84,6 +84,7 @@ const useInfiniteScroll = <TData extends InfiniteScrollResType, TParams = object
 
   return {
     data,
+    setData,
     isLoading,
     error,
     lastItemRef,

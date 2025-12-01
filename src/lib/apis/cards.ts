@@ -16,7 +16,7 @@ export interface CreateCardType extends ChangeCardType {
 
 interface GetCardDataParams {
   size: number;
-  cursorId: null | number;
+  cursorId?: null | number;
   columnId: number;
 }
 

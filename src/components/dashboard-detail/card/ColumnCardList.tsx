@@ -3,13 +3,11 @@ import DashboardCard from '@/components/dashboard-detail/card/DashboardCard';
 import ColumnInfoHeader from '@/components/dashboard-detail/column/ColumnInfoHeader';
 import CreateCardModal from '@/components/dashboard-detail/modal/CreateCardModal';
 import Skeleton from '@/components/skeleton/Skeleton';
-import { CREATE_CARD } from '@/constants/modalName';
+import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import { useModal } from '@/hooks/useModal';
 import useMutation from '@/hooks/useMutation';
-import useQuery from '@/hooks/useQuery';
 import useUserContext from '@/hooks/useUserContext';
 import { createCard, getCardData, type CreateCardType } from '@/lib/apis/cards';
-import { getMemberList } from '@/lib/apis/members';
 import type { CardInitialValueType, CardsResponse } from '@/types/card';
 import type { ColumnsData } from '@/types/column';
 import type { MembersResponse } from '@/types/members';
@@ -18,52 +16,78 @@ import { uploadCardImage } from '@/utils/card/uploadCardImage';
 
 interface ColumnCardListProps {
   column: ColumnsData;
-  selectedColumn: ColumnsData | null;
   dashboardId: string;
+  memberData: MembersResponse | null;
   onHeaderClick: () => void;
-  onCreateCardClick: () => void;
 }
+
+const CARD_LIST_SIZE = 5;
 
 export default function ColumnCardList({
   column,
-  selectedColumn,
   dashboardId,
+  memberData,
   onHeaderClick,
-  onCreateCardClick,
 }: ColumnCardListProps) {
   const { userProfile } = useUserContext();
-  const createCardModal = useModal(CREATE_CARD);
+  const CREATE_MODAL_NAME = `CREATE_CARD_${column.id}`;
+  const createCardModal = useModal(CREATE_MODAL_NAME);
 
-  const cardQuery = useQuery<CardsResponse>({
-    fetchFn: () =>
-      getCardData({
-        size: 20,
-        cursorId: null,
-        columnId: column.id,
-      }),
-  });
-
-  const memberQuery = useQuery<MembersResponse>({
-    fetchFn: () => getMemberList({ dashboardId }),
-    params: { dashboardId },
-  });
-
-  // card mutation
-  const createCardMutation = useMutation({
-    mutationFn: (reqBody: CreateCardType) => createCard(reqBody),
-    onSuccess: () => {
-      // TODO: 카드 데이터에 업데이트 필요
-      createCardModal.handleModalClose();
+  const {
+    data: infiniteData,
+    setData: infiniteSetData,
+    isLoading,
+    error,
+    lastItemRef,
+  } = useInfiniteScroll<CardsResponse, { size: number; columnId: number }>({
+    fetchFn: (params) => getCardData(params),
+    params: { size: CARD_LIST_SIZE, columnId: column.id },
+    onSuccess: (prev, next) => {
+      if (!prev) {
+        return next;
+      }
+      return {
+        ...next,
+        cards: [...prev.cards, ...next.cards],
+        totalCount: next.totalCount,
+      };
     },
   });
 
-  if (cardQuery.isLoading || !cardQuery.data || !memberQuery.data) {
+  const createCardMutation = useMutation({
+    mutationFn: (reqBody: CreateCardType) => createCard(reqBody),
+    onSuccess: (newCard) => {
+      createCardModal.handleModalClose();
+
+      infiniteSetData((prev) => {
+        if (!prev) {
+          return prev;
+        }
+        return {
+          ...prev,
+          cards: [...prev.cards, newCard],
+          totalCount: prev.totalCount + 1,
+        };
+      });
+    },
+  });
+
+  if (isLoading && !infiniteData) {
     return (
       <div className='flex flex-col gap-[16px]'>
         <Skeleton className='mb-[8px] h-[24px] w-[120px] rounded' />
-        <Skeleton className='flex flex-col overflow-hidden rounded-[6px] border border-gray-300 bg-gray-0 p-[12px] pb-[6px] select-none sm:flex-row sm:items-center sm:px-[20px] sm:py-[16px] md:max-w-[314px] md:flex-col md:items-start' />
+        <Skeleton className='flex flex-col overflow-hidden rounded-[6px] p-[18px] pb-[6px] select-none sm:flex-row sm:items-center sm:px-[20px] sm:py-[16px] md:max-w-[314px] md:flex-col md:items-start' />
       </div>
     );
+  }
+
+  if (!infiniteData || !memberData) {
+    return null;
+  }
+
+  // TODO: 오류 컴포넌트 구현
+  if (error) {
+    return <div>오류가 발생했습니다.</div>;
   }
 
   // card handler
@@ -71,14 +95,10 @@ export default function ColumnCardList({
     formValue: CardInitialValueType,
     imageFile: File | null
   ) => {
-    if (!selectedColumn) {
-      return;
-    }
-
-    const imageUrl = await uploadCardImage(selectedColumn.id, imageFile);
+    const imageUrl = await uploadCardImage(column.id, imageFile);
     const reqBody = createCardRequestBody(
       formValue,
-      selectedColumn.id,
+      column.id,
       dashboardId,
       imageUrl,
       userProfile?.id
@@ -86,30 +106,36 @@ export default function ColumnCardList({
     await createCardMutation.mutate(reqBody);
   };
 
-  const { cards, totalCount } = cardQuery.data;
+  const { cards, totalCount } = infiniteData;
 
   return (
     <>
-      <div className='flex flex-col gap-[16px]'>
-        <ColumnInfoHeader title={column.title} totalCount={totalCount} onClick={onHeaderClick} />
-        <CreateButton
-          onClick={() => {
-            onCreateCardClick();
-            createCardMutation.reset();
-            createCardModal.handleModalOpen();
-          }}
-        />
-        {cards.map((card) => (
-          <DashboardCard key={card.id} cardData={card} />
-        ))}
-      </div>
+      <ColumnInfoHeader title={column.title} totalCount={totalCount} onClick={onHeaderClick} />
+      <CreateButton
+        className='mb-[16px] min-h-[40px]'
+        onClick={() => {
+          createCardMutation.reset();
+          createCardModal.handleModalOpen();
+        }}
+      />
+      <ul className='flex flex-col gap-[16px]'>
+        {cards.map((card, index) => {
+          const isLast = index === cards.length - 1;
+          return (
+            <li key={card.id} ref={isLast ? lastItemRef : undefined}>
+              <DashboardCard cardData={card} />
+            </li>
+          );
+        })}
+      </ul>
 
       {/* 할 일 생성 모달 */}
       {createCardModal.isOpen && (
         <CreateCardModal
+          modalName={CREATE_MODAL_NAME}
           serverErrorMessage={createCardMutation.error}
           onSubmit={handleSubmitCreateCard}
-          memberData={memberQuery.data}
+          memberData={memberData}
         />
       )}
     </>
