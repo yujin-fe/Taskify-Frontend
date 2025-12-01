@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Icons from '@/assets/icons';
 import notInvited from '@/assets/images/dashboard/no-invited-dashboard.png';
 import Button from '@/components/common/Button';
@@ -11,14 +12,15 @@ import type { InvitationParams, Invitation, MyInvitationResponse } from '@/types
 const INVITATION_LIST_SIZE = 7;
 
 export default function InvitedDashboard() {
+  const [search, setSearch] = useState<null | string>(null);
   const isMobile = useResponsiveValue({
     mobile: true,
     tablet: false,
     desktop: false,
   });
+
   const params: InvitationParams = {
     size: INVITATION_LIST_SIZE,
-    title: null,
   };
 
   const onSuccess = (prevData: MyInvitationResponse | null, newData: MyInvitationResponse) => {
@@ -31,11 +33,37 @@ export default function InvitedDashboard() {
     };
   };
 
-  const { data, error, lastItemRef } = useInfiniteScroll({
+  const { data, error, setData, resetData, lastItemRef } = useInfiniteScroll({
     fetchFn: (params) => getMyInvitations(params),
     params,
     onSuccess,
   });
+
+  const handleSearch = (value: string) => {
+    setSearch(value);
+  };
+
+  const handleResetSearchbar = async () => {
+    resetData();
+    setSearch('');
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!search) {
+      resetData();
+      return;
+    }
+    try {
+      const data = await getMyInvitations({
+        title: search,
+      });
+      setData(data);
+    } catch (error) {
+      console.error(error);
+      //TODO: 에러처리
+    }
+  };
 
   //TODO: 에러발생 컴포넌트
   if (error) {
@@ -95,7 +123,7 @@ export default function InvitedDashboard() {
     );
   };
 
-  return invitations.length === 0 ? (
+  return invitations.length === 0 && search === null ? (
     nullList()
   ) : (
     <>
@@ -106,14 +134,19 @@ export default function InvitedDashboard() {
               초대받은 대시보드
             </Title>
           </DashboardHeader>
-          <Input value={'임시값'}>
-            <Input.Group className='flex h-[40px] items-center'>
-              <Input.PrefixIcon>
-                <Icons.Search className='text-gray-700' />
-              </Input.PrefixIcon>
-              <Input.Field placeholder='검색' />
-            </Input.Group>
-          </Input>
+          <form onSubmit={(e) => handleSubmit(e)}>
+            <Input value={search ?? ''} onChange={handleSearch}>
+              <Input.Group className='flex h-[40px] items-center'>
+                <Input.PrefixIcon>
+                  <Icons.Search className='text-gray-700' />
+                </Input.PrefixIcon>
+                <Input.SuffixButton ariaLabel='검색창 초기화' onClick={handleResetSearchbar}>
+                  <Icons.Close />
+                </Input.SuffixButton>
+                <Input.Field placeholder='검색' />
+              </Input.Group>
+            </Input>
+          </form>
         </div>
         <div className='flex max-h-[625px] flex-col sm:h-[400px] lg:h-[464px]'>
           {!isMobile && (
