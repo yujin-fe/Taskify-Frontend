@@ -57,7 +57,7 @@ export default function Layout() {
           currentPage={currentPage}
         />
         <Header isCollapsed={isCollapsed} />
-        <div className={cn(isCollapsed ? 'pl-[67px]' : 'pl-[67px] md:pl-[300px]')}>
+        <div className={cn(isCollapsed ? 'pl-[67px]' : 'pl-[67px] lg:pl-[300px]')}>
           <main className='min-h-dvh bg-base pt-[70px]'>
             <Outlet />
           </main>
