@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 interface UseMutationProps<TData, TVariables> {
   mutationFn: (variables: TVariables) => Promise<AxiosResponse<TData>>;
-  onSuccess?: (data?: TData) => void;
+  onSuccess?: (data: TData | undefined, variables: TVariables) => void;
   onError?: (errorMessage: string) => void;
 }
 
@@ -24,7 +24,7 @@ const useMutation = <TData = unknown, TVariables = unknown>({
     try {
       const res = await mutationFn(variables);
       setData(res.data);
-      onSuccess?.(res.data);
+      onSuccess?.(res.data, variables);
       return res.data;
     } catch (error: unknown) {
       let errorMessage = '알 수 없는 오류가 발생했습니다.';

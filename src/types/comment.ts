@@ -1,5 +1,5 @@
 export interface Author {
-  profileImageUrl: string;
+  profileImageUrl: string | null;
   nickname: string;
   id: number;
 }

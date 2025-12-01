@@ -10,17 +10,19 @@ import CommentList from '@/components/dashboard-detail/modal/card-detail-modal/C
 import { getProfileColorForId } from '@/utils/avatar';
 
 export default function CardDetailModalDesktop({
-  commentListData,
+  commentList,
   comment,
   setComment,
   handleCommentSubmit,
+  handleCommentEdit,
+  handleCommentDelete,
   handleCardEdit,
   handleCardDelete,
   closeModal,
 }: CardDetailModalContentProps) {
   return (
     <div className='mx-[32px] hidden w-full max-w-[730px] items-start gap-[14px] rounded-[8px] bg-gray-0 py-[30px] pr-[28px] pl-[18px] sm:flex'>
-      <div className='scrollbar-hidden relative max-h-[calc(100dvh-250px)] grow overflow-y-auto'>
+      <div className='scrollbar-hidden relative h-[calc(100dvh-450px)] grow overflow-y-auto'>
         <Title size={'2xl'} weight={'bold'} className='mb-[24px]'>
           새로운 일정 관리 Taskify
         </Title>
@@ -52,7 +54,14 @@ export default function CardDetailModalDesktop({
           <Comment.Field />
           <Comment.Submit />
         </Comment.Root>
-        {commentListData && <CommentList data={commentListData} />}
+        {commentList.data && (
+          <CommentList
+            data={commentList.data}
+            lastItemRef={commentList.lastItemRef}
+            onEdit={handleCommentEdit}
+            onDelete={handleCommentDelete}
+          />
+        )}
         <div className='pointer-events-none sticky bottom-0 left-0 h-[40px] w-full bg-gradient-to-t from-gray-0 to-transparent' />
       </div>
       <div className='flex flex-col items-end'>

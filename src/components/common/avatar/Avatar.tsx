@@ -3,6 +3,7 @@ import AvatarFallback from '@/components/common/avatar/AvatarFallback';
 import AvatarImg from '@/components/common/avatar/AvatarImg';
 import { AvatarContext } from '@/context/avatarContext';
 import type { Assignee } from '@/types/card';
+import type { Author } from '@/types/comment';
 import type { Member } from '@/types/members';
 import type { UserMe } from '@/types/userMe';
 import { cn } from '@/utils/cn';
@@ -10,7 +11,7 @@ import { cn } from '@/utils/cn';
 interface AvatarProps {
   children: React.ReactNode;
   size: 's' | 'm';
-  user: UserMe | Assignee | Member;
+  user: UserMe | Assignee | Member | Author;
 }
 
 /**
