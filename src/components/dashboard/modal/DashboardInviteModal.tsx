@@ -4,7 +4,7 @@ import Input from '@/components/common/input/Input';
 import FormModal from '@/components/common/modal/FormModal';
 import { INVITE } from '@/constants/modalName';
 import { useModal } from '@/hooks/useModal';
-import { validateEmail } from '@/utils/validation';
+import { validateEmail, validateInvitation } from '@/utils/validation';
 
 interface DashboardInviteModalProps {
   inviteeEmail: string;
@@ -13,6 +13,7 @@ interface DashboardInviteModalProps {
   setErrorMsg: React.Dispatch<React.SetStateAction<string>>;
   apiErrorMsg: string;
   onSubmit: () => Promise<void>;
+  dashboardId: string;
 }
 
 export default function DashboardInviteModal({
@@ -22,6 +23,7 @@ export default function DashboardInviteModal({
   setErrorMsg,
   apiErrorMsg,
   onSubmit,
+  dashboardId,
 }: DashboardInviteModalProps) {
   const { handleModalClose } = useModal(INVITE);
 
@@ -34,18 +36,24 @@ export default function DashboardInviteModal({
 
   const handleChange = (value: string) => {
     setInviteeEmail(value);
-
     if (errorMsg) {
       setErrorMsg('');
     }
   };
 
   const handleBlur = () => {
+    if (validateInvitation(inviteeEmail + dashboardId)) {
+      setErrorMsg(() => validateInvitation(inviteeEmail + dashboardId));
+      return;
+    }
     const message = validateEmail(inviteeEmail);
     setErrorMsg(message);
   };
 
-  const disabled = inviteeEmail.trim() === '' || validateEmail(inviteeEmail) !== '';
+  const disabled =
+    inviteeEmail.trim() === ''
+    || validateEmail(inviteeEmail) !== ''
+    || validateInvitation(inviteeEmail + dashboardId) !== '';
 
   return (
     <FormModal closeBtn modalName={INVITE}>

@@ -72,7 +72,14 @@ export default function InvitesEdit() {
   const cancelMutation = useMutation<unknown, DeleteInvitationParams>({
     mutationFn: ({ dashboardId: id, invitationId }) =>
       deleteInvitationdata(Number(id), invitationId),
-    onSuccess: () => {
+    onSuccess: (_, value: DeleteInvitationParams) => {
+      const invitation = invitations.find(
+        (inv) => inv.id.toString() === value.invitationId.toString()
+      );
+      if (invitation) {
+        const inviteeEmail = invitation?.invitee?.email;
+        localStorage.removeItem(inviteeEmail + dashboardId);
+      }
       setDeleteMessage('초대 취소가 완료되었습니다.');
       openCancelModal();
       refetch();
@@ -85,27 +92,13 @@ export default function InvitesEdit() {
   }, [inviteData?.totalCount]);
 
   const isNextDisabled = currentPage >= calculatedTotalPages;
-  const invitations: Invitation[] = useMemo(() => inviteData?.invitations || [], [inviteData]);
-
-  const numericDashboardId: number | null = useMemo(() => {
-    if (dashboardId) {
-      const numId = Number(dashboardId);
-      if (!isNaN(numId)) {
-        return numId;
-      }
-    }
-    return null;
-  }, [dashboardId]);
-
-  if (!dashboardId) {
-    return null;
-  }
-
-  if (numericDashboardId === null) {
-    return <div>유효하지 않은 대시보드 ID입니다.</div>;
-  }
 
   if (!inviteData) {
+    return null;
+  }
+  const invitations: Invitation[] = inviteData?.invitations;
+
+  if (!dashboardId) {
     return null;
   }
 
@@ -124,7 +117,7 @@ export default function InvitesEdit() {
     }
 
     try {
-      const resData = await inviteDashboard(dashboardId, { email: inviteeEmail });
+      const resData = await inviteDashboard(dashboardId.toString(), { email: inviteeEmail });
 
       setCompletedInviteeUser(resData.invitee.nickname);
       openBaseModal();
@@ -157,18 +150,18 @@ export default function InvitesEdit() {
       type='InvitesItem'
       email={invitation.invitee.email}
       id={invitation.id}
-      onCancel={() => handleCancel(numericDashboardId, invitation.id)}>
+      onCancel={() => handleCancel(+dashboardId, invitation.id)}>
       <DashboardItem.Content
         type='InvitesItem'
         email={invitation.invitee.email}
         id={invitation.id}
-        onCancel={() => handleCancel(numericDashboardId, invitation.id)}
+        onCancel={() => handleCancel(+dashboardId, invitation.id)}
       />
       <DashboardItem.Action
         type='InvitesItem'
         email={invitation.invitee.email}
         id={invitation.id}
-        onCancel={() => handleCancel(numericDashboardId, invitation.id)}
+        onCancel={() => handleCancel(+dashboardId, invitation.id)}
       />
     </DashboardItem>
   ));
@@ -227,6 +220,7 @@ export default function InvitesEdit() {
           setErrorMsg={setInputErrorMsg}
           onSubmit={handleInviteSubmit}
           apiErrorMsg={apiErrorMsg}
+          dashboardId={dashboardId}
         />
       )}
 

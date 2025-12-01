@@ -3,11 +3,11 @@ import { useState } from 'react';
 import { Outlet, useParams } from 'react-router';
 import BaseModalFrame from '@/components/common/modal/BaseModalFrame';
 import DashboardInviteModal from '@/components/dashboard/modal/DashboardInviteModal';
+import { REQUESTED_EMAIL } from '@/constants/invitation';
 import { INVITE } from '@/constants/modalName';
 import useBaseModal from '@/hooks/useBaseModal';
 import { useModal } from '@/hooks/useModal';
 import { inviteDashboard } from '@/lib/apis/Invitations';
-
 export default function DetailLayout() {
   const { dashboardId } = useParams();
   const {
@@ -34,6 +34,7 @@ export default function DetailLayout() {
       setCompletedInviteeUser(resData.invitee.nickname);
       openBaseModal();
       closeInviteModal();
+      localStorage.setItem(inviteeEmail + dashboardId, REQUESTED_EMAIL);
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setApiErrorMsg(err.response?.data?.message ?? '오류가 발생했습니다.');
@@ -52,6 +53,7 @@ export default function DetailLayout() {
           setErrorMsg={setInputErrorMsg}
           onSubmit={handleInviteSubmit}
           apiErrorMsg={apiErrorMsg}
+          dashboardId={dashboardId}
         />
       )}
       {baseModalIsOpen && (
