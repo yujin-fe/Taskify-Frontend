@@ -3,20 +3,13 @@ import { useParams } from 'react-router';
 import ModalPortal from '@/components/common/modal/ModalPortal';
 import CardDetailModalDesktop from '@/components/dashboard-detail/modal/card-detail-modal/CardDetailModalDesktop';
 import CardDetailModalMobile from '@/components/dashboard-detail/modal/card-detail-modal/CardDetailModalMobile';
-import useInfiniteScroll from '@/hooks/useInfiniteScroll';
+import useCardDetail from '@/hooks/dashboard-detail/useCardDetail';
+import useCommentActions from '@/hooks/dashboard-detail/useCommentActions';
 import useMutation from '@/hooks/useMutation';
-import useQuery from '@/hooks/useQuery';
 import { useResponsiveValue } from '@/hooks/useResponsiveValue';
-import { getCardDetail } from '@/lib/apis/cards';
-import {
-  updateComment,
-  createComment,
-  deleteComment,
-  getCommentList,
-  type CreateCommentType,
-} from '@/lib/apis/comments';
+import { deleteCard } from '@/lib/apis/cards';
 import type { CardDetailResponse } from '@/types/card';
-import type { Comment, CommentListResponse } from '@/types/comment';
+import type { CommentListResponse } from '@/types/comment';
 import type { InfiniteScrollReturn } from '@/types/infiniteScroll';
 
 export interface CardDetailModalContentProps {
@@ -38,15 +31,15 @@ interface CardDetailModal {
   columnTitle: string;
   cardId: number;
   closeModal: () => void;
+  onDeleteCard: (id: number) => void;
 }
-
-const COMMENT_LIST_SIZE = 5;
 
 export default function CardDetailModal({
   closeModal,
   columnTitle,
   columnId,
   cardId,
+  onDeleteCard,
 }: CardDetailModal) {
   const { dashboardId } = useParams();
   const [comment, setComment] = useState('');
@@ -55,109 +48,44 @@ export default function CardDetailModal({
     desktop: true,
   });
 
-  const cardDetailQuery = useQuery<CardDetailResponse, { cardId: number }>({
-    fetchFn: () => getCardDetail(cardId),
-    params: { cardId },
-  });
+  const cardDetailQuery = useCardDetail(cardId);
+  const { commentList, submitComment, updateComment, deleteComment } = useCommentActions(
+    cardId,
+    columnId,
+    Number(dashboardId),
+    () => setComment('')
+  );
 
-  const commentList = useInfiniteScroll<
-    CommentListResponse,
-    { size: number; cardId: number; columnId: number }
-  >({
-    fetchFn: (params) => getCommentList(params),
-    params: { size: COMMENT_LIST_SIZE, columnId, cardId },
-    onSuccess: (prev, next) => {
-      if (!prev) {
-        return next;
-      }
-      return {
-        ...next,
-        comments: [...prev.comments, ...next.comments],
-      };
-    },
-  });
+  const deleteCardMutation = useMutation<void, number>({
+    mutationFn: (cardId) => deleteCard(cardId),
 
-  const createCommentMutation = useMutation<Comment, CreateCommentType>({
-    mutationFn: (reqBody: CreateCommentType) => createComment(reqBody),
-    onSuccess: (newComment) => {
-      setComment('');
-
-      commentList.setData((prev): CommentListResponse | null => {
-        if (!prev) {
-          return prev;
-        }
-
-        return {
-          ...prev,
-          comments: [newComment!, ...prev.comments],
-        };
-      });
-    },
-  });
-
-  const updateCommentMutation = useMutation({
-    mutationFn: ({ id, content }: { id: number; content: string }) =>
-      updateComment(id, { content }),
-
-    onSuccess: (newData) => {
-      commentList.setData((prev) => {
-        if (!prev) {
-          return prev;
-        }
-        return {
-          ...prev,
-          comments: prev.comments.map((c) =>
-            c.id === newData.id ? { ...c, content: newData.content } : c
-          ),
-        };
-      });
-    },
-  });
-
-  const deleteCommentMutation = useMutation<void, { id: number }>({
-    mutationFn: ({ id }) => deleteComment(id),
-    onSuccess: (_, variables) => {
-      const deletedId = variables.id;
-
-      commentList.setData((prev) => {
-        if (!prev) {
-          return prev;
-        }
-        return {
-          ...prev,
-          comments: prev.comments.filter((c) => c.id !== deletedId),
-        };
-      });
+    onSuccess: (_, deletedId) => {
+      onDeleteCard(deletedId);
     },
   });
 
   const handleCommentSubmit = async () => {
-    if (!dashboardId) {
-      return;
-    }
-
     if (!comment.trim()) {
       return;
     }
-
-    const reqBody = { content: comment, cardId, columnId, dashboardId: Number(dashboardId) };
-    await createCommentMutation.mutate(reqBody);
+    await submitComment(comment);
   };
 
-  const handleCommentEdit = async (commentId: number, newContent: string) => {
-    await updateCommentMutation.mutate({ id: commentId, content: newContent });
+  const handleCommentEdit = (commentId: number, newContent: string) => {
+    updateComment(commentId, newContent);
   };
 
   const handleCommentDelete = async (commentId: number) => {
-    await deleteCommentMutation.mutate({ id: commentId });
+    deleteComment(commentId);
   };
 
   const handleCardEdit = () => {
     console.log('TODO: 할 일 수정 모달 연결, 이 모달은 꺼져야함');
   };
 
-  const handleCardDelete = () => {
-    console.log('TODO: 카드 삭제 api 연결');
+  const handleCardDelete = async () => {
+    await deleteCardMutation.mutate(cardId);
+    closeModal();
   };
 
   return (

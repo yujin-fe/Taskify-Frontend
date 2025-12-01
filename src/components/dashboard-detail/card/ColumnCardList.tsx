@@ -106,6 +106,19 @@ export default function ColumnCardList({
     await createCardMutation.mutate(reqBody);
   };
 
+  const handleDeleteCard = (cardId: number) => {
+    infiniteSetData((prev) => {
+      if (!prev) {
+        return prev;
+      }
+      return {
+        ...prev,
+        cards: prev.cards.filter((c) => c.id !== cardId),
+        totalCount: prev.totalCount - 1,
+      };
+    });
+  };
+
   const { cards, totalCount } = infiniteData;
 
   return (
@@ -123,7 +136,12 @@ export default function ColumnCardList({
           const isLast = index === cards.length - 1;
           return (
             <li key={card.id} ref={isLast ? lastItemRef : undefined}>
-              <DashboardCard columnTitle={column.title} columnId={column.id} cardData={card} />
+              <DashboardCard
+                columnTitle={column.title}
+                columnId={column.id}
+                cardData={card}
+                onDeleteCard={() => handleDeleteCard(card.id)}
+              />
             </li>
           );
         })}
