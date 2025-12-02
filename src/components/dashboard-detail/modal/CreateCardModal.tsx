@@ -6,10 +6,13 @@ import Input from '@/components/common/input/Input';
 import Label from '@/components/common/Label';
 import FormModal from '@/components/common/modal/FormModal';
 import TextArea from '@/components/common/TextArea';
-import Combobox from '@/components/dashboard/combobox/Combobox';
+import Combobox, {
+  type StatusComboboxValue,
+  type UserComboboxValue,
+} from '@/components/dashboard/combobox/Combobox';
 import TagInput from '@/components/dashboard-detail/modal/TagInput';
 import { useModal } from '@/hooks/useModal';
-import type { Assignee, CardInitialValueType } from '@/types/card';
+import type { CardInitialValueType } from '@/types/card';
 import type { MembersResponse } from '@/types/members';
 
 interface CreateCardModalProps {
@@ -39,9 +42,11 @@ export default function CreateCardModal({
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleChange = (key: keyof typeof initialValue) => (value: string | Assignee | null) => {
-    setFormValue((prev) => ({ ...prev, [key]: value }));
-  };
+  const handleChange =
+    (key: keyof typeof initialValue) =>
+    (value: string | UserComboboxValue | StatusComboboxValue | null) => {
+      setFormValue((prev) => ({ ...prev, [key]: value }));
+    };
 
   const handleCardSubmit = async () => {
     try {

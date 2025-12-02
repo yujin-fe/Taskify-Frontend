@@ -10,8 +10,18 @@ export default function ComboboxList({ children }: { children: React.ReactNode }
     if (!React.isValidElement(child)) {
       return true;
     }
-    const itemValue = (child.props as ComboboxItemProps).value || '';
-    return matchSearch(itemValue.nickname, searchQuery);
+
+    const itemValue = (child.props as ComboboxItemProps).value;
+
+    if ('nickname' in itemValue && itemValue.nickname) {
+      return matchSearch(itemValue.nickname, searchQuery);
+    }
+
+    if ('title' in itemValue && itemValue.title) {
+      return matchSearch(itemValue.title, searchQuery);
+    }
+
+    return true;
   });
 
   if (!isOpen) {

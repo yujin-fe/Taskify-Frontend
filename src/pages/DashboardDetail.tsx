@@ -180,6 +180,7 @@ export default function DashboardDetail() {
           {columnQuery.data.data.map((column) => (
             <ColumnContainer key={column.id}>
               <ColumnCardList
+                columnListData={columnQuery.data}
                 dashboardId={dashboardId}
                 memberData={memberQuery.data}
                 column={column}

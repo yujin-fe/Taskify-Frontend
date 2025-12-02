@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
 import Icons from '@/assets/icons';
+import Avatar from '@/components/common/avatar/Avatar';
+import CardStatusBadge from '@/components/dashboard-detail/card/CardStatusBadge';
 import useComboboxContext from '@/hooks/useComboboxContext';
 import { cn } from '@/utils/cn';
 
@@ -31,7 +33,8 @@ interface ComboboxTriggerProps {
 }
 
 export default function ComboboxTrigger({ placeholder, name }: ComboboxTriggerProps) {
-  const { id, isOpen, setIsOpen, searchQuery, setSearchQuery, selectedNode } = useComboboxContext();
+  const { id, isOpen, setIsOpen, searchQuery, setSearchQuery, selectedValue } =
+    useComboboxContext();
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -47,6 +50,36 @@ export default function ComboboxTrigger({ placeholder, name }: ComboboxTriggerPr
       setSearchQuery('');
     }
   };
+
+  let valueContent;
+
+  if (!selectedValue) {
+    valueContent = <span className='text-gray-400'>{placeholder}</span>;
+  } else if ('nickname' in selectedValue) {
+    valueContent = (
+      <div className='flex items-center gap-2'>
+        <Avatar
+          size='s'
+          user={{
+            id: selectedValue.userId ?? selectedValue.id,
+            nickname: selectedValue.nickname,
+            profileImageUrl: selectedValue.profileImageUrl,
+          }}>
+          <Avatar.Img />
+          <Avatar.Fallback />
+        </Avatar>
+        <span className='font-medium'>{selectedValue.nickname}</span>
+      </div>
+    );
+  } else if ('title' in selectedValue) {
+    valueContent = (
+      <div className='flex items-center'>
+        <CardStatusBadge title={selectedValue.title} />
+      </div>
+    );
+  } else {
+    valueContent = <span className='font-medium'>{String(selectedValue)}</span>;
+  }
 
   const arrow = <Icons.ArrowDropdown className={cn('text-gray-700', { 'rotate-180': isOpen })} />;
 
@@ -85,12 +118,7 @@ export default function ComboboxTrigger({ placeholder, name }: ComboboxTriggerPr
         }}
         tabIndex={-1}
       />
-
-      {selectedNode ? (
-        <div className='flex items-center gap-2'>{selectedNode}</div>
-      ) : (
-        <span className='text-gray-400'>{placeholder}</span>
-      )}
+      {valueContent}
       {arrow}
     </ComboboxTriggerContainer>
   );

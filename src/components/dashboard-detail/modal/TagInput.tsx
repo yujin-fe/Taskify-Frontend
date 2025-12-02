@@ -49,11 +49,13 @@ export default function TagInput({ tags, setTags }: TagInputProps) {
     <div className='flex flex-col gap-[4px]'>
       <div className='flex min-h-[48px] w-full flex-wrap items-center gap-[10px] rounded-[8px] border border-gray-300 bg-gray-0 px-[16px] py-[10px] focus-within:border-primary md:max-w-[520px]'>
         {tags.length > 0
-          && tags.map((tag, idx) => (
-            <Tag key={tag} onDelete={() => handleDelete(tag)} color={getProfileColorForId(idx)}>
-              {tag}
-            </Tag>
-          ))}
+          && tags
+            .filter((t) => t.trim() !== '')
+            .map((tag, idx) => (
+              <Tag key={tag} onDelete={() => handleDelete(tag)} color={getProfileColorForId(idx)}>
+                {tag}
+              </Tag>
+            ))}
         <input
           type='text'
           placeholder='입력 후 Enter'

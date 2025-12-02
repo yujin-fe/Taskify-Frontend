@@ -6,20 +6,28 @@ import CardDetailModal from '@/components/dashboard-detail/modal/card-detail-mod
 import { DUE_DATE } from '@/constants/requestCardData';
 import { useModal } from '@/hooks/useModal';
 import type { CardDetailResponse } from '@/types/card';
+import type { ColumnsResponse } from '@/types/column';
+import type { MembersResponse } from '@/types/members';
 import { getProfileColorForId } from '@/utils/avatar';
 
 interface DashboardCardProps {
   cardData: CardDetailResponse;
   columnId: number;
   columnTitle: string;
+  columnListData: ColumnsResponse | null;
+  memberData: MembersResponse;
   onDeleteCard: () => void;
+  onUpdateCard: (updated: CardDetailResponse) => void;
 }
 
 export default function DashboardCard({
   cardData,
   columnId,
   columnTitle,
+  columnListData,
+  memberData,
   onDeleteCard,
+  onUpdateCard,
 }: DashboardCardProps) {
   const { imageUrl, tags, title, dueDate, assignee } = cardData;
   const [isImageError, setIsImageError] = useState(false);
@@ -76,6 +84,9 @@ export default function DashboardCard({
           closeModal={modal.handleModalClose}
           columnTitle={columnTitle}
           onDeleteCard={onDeleteCard}
+          onUpdateCard={onUpdateCard}
+          memberData={memberData}
+          columnListData={columnListData}
         />
       )}
     </>

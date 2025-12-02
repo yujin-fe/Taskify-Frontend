@@ -1,6 +1,6 @@
 import { api, fileApi } from '@/lib/axios';
 
-interface ChangeCardType {
+export interface UpdateCardType {
   columnId: number;
   assigneeUserId: number;
   title: string;
@@ -10,7 +10,7 @@ interface ChangeCardType {
   imageUrl: string | null;
 }
 
-export interface CreateCardType extends ChangeCardType {
+export interface CreateCardType extends UpdateCardType {
   dashboardId: number;
 }
 
@@ -48,7 +48,7 @@ export const getCardListData = async (params: GetCardListDataParams) => {
 };
 
 /** 카드(할 일) 수정 api */
-export const updateCard = async (cardId: number, reqBody: ChangeCardType) => {
+export const updateCard = async (cardId: number, reqBody: UpdateCardType) => {
   const res = await api.put(`/cards/${cardId}`, reqBody);
   return res;
 };

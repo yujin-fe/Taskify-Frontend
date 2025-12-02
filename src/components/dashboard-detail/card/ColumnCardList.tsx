@@ -8,14 +8,15 @@ import { useModal } from '@/hooks/useModal';
 import useMutation from '@/hooks/useMutation';
 import useUserContext from '@/hooks/useUserContext';
 import { createCard, getCardListData, type CreateCardType } from '@/lib/apis/cards';
-import type { CardInitialValueType, CardsResponse } from '@/types/card';
-import type { ColumnsData } from '@/types/column';
+import type { CardDetailResponse, CardInitialValueType, CardsResponse } from '@/types/card';
+import type { ColumnsData, ColumnsResponse } from '@/types/column';
 import type { MembersResponse } from '@/types/members';
-import { createCardRequestBody } from '@/utils/card/createCardReqBody';
+import { createCardRequestBody } from '@/utils/card/createCardRequestBody';
 import { uploadCardImage } from '@/utils/card/uploadCardImage';
 
 interface ColumnCardListProps {
   column: ColumnsData;
+  columnListData: ColumnsResponse | null;
   dashboardId: string;
   memberData: MembersResponse | null;
   onHeaderClick: () => void;
@@ -28,6 +29,7 @@ export default function ColumnCardList({
   dashboardId,
   memberData,
   onHeaderClick,
+  columnListData,
 }: ColumnCardListProps) {
   const { userProfile } = useUserContext();
   const CREATE_MODAL_NAME = `CREATE_CARD_${column.id}`;
@@ -106,6 +108,18 @@ export default function ColumnCardList({
     await createCardMutation.mutate(reqBody);
   };
 
+  const handleUpdateCard = (updated: CardDetailResponse) => {
+    infiniteSetData((prev) => {
+      if (!prev) {
+        return prev;
+      }
+
+      const newCards = prev.cards.map((c) => (c.id === updated.id ? updated : c));
+
+      return { ...prev, cards: newCards };
+    });
+  };
+
   const handleDeleteCard = (cardId: number) => {
     infiniteSetData((prev) => {
       if (!prev) {
@@ -141,6 +155,9 @@ export default function ColumnCardList({
                 columnId={column.id}
                 cardData={card}
                 onDeleteCard={() => handleDeleteCard(card.id)}
+                onUpdateCard={handleUpdateCard}
+                memberData={memberData}
+                columnListData={columnListData}
               />
             </li>
           );

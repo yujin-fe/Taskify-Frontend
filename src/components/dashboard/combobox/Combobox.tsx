@@ -4,13 +4,24 @@ import ComboboxList from '@/components/dashboard/combobox/ComboboxList';
 import ComboboxTrigger from '@/components/dashboard/combobox/ComboboxTrigger';
 import ComboboxContext from '@/context/comboboxContext';
 import useComboboxState from '@/hooks/useComboboxState';
-import type { Assignee } from '@/types/card';
+
+export interface UserComboboxValue {
+  id?: number;
+  userId?: number;
+  nickname: string;
+  profileImageUrl: string | null;
+}
+
+export interface StatusComboboxValue {
+  title: string;
+  id: number;
+}
 
 interface ComboboxProps {
   id: string;
   children: React.ReactNode;
-  value: Assignee | null;
-  setValue: (value: Assignee | null) => void;
+  value: UserComboboxValue | StatusComboboxValue | null;
+  setValue: (value: UserComboboxValue | StatusComboboxValue | null) => void;
 }
 
 /**

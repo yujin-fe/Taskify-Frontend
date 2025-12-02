@@ -24,7 +24,7 @@ interface AvatarProps {
 
 export default function Avatar({ children, size, user }: AvatarProps) {
   const [imageError, setImageError] = useState(false);
-  const AvatarStyle = cn('pointer-events-none rounded-full overflow-hidden', {
+  const AvatarStyle = cn('pointer-events-none rounded-full overflow-hidden shrink-0', {
     'w-[24px] h-[24px] ': size === 's',
     'w-[38px] h-[38px] border-2 border-gray-0': size === 'm',
   });

@@ -34,7 +34,7 @@ export default function CardDetailModalDesktop({
 
   return (
     <div className='mx-[32px] hidden w-full max-w-[730px] items-start gap-[14px] rounded-[8px] bg-gray-0 py-[30px] pr-[28px] pl-[18px] sm:flex'>
-      <div className='scrollbar-hidden relative h-[calc(100dvh-450px)] grow overflow-y-auto'>
+      <div className='scrollbar-hidden relative h-[calc(75dvh)] max-h-[700px] grow overflow-y-auto'>
         <Title size={'2xl'} weight={'bold'} className='mb-[24px]'>
           {title}
         </Title>
