@@ -6,11 +6,12 @@ import CardDetailModalMobile from '@/components/dashboard-detail/modal/card-deta
 import ChangeCardModal from '@/components/dashboard-detail/modal/ChangeCardModal';
 import useCardDetail from '@/hooks/dashboard-detail/useCardDetail';
 import useCommentActions from '@/hooks/dashboard-detail/useCommentActions';
+import useUpdateCard from '@/hooks/dashboard-detail/useUpdateCard';
 import { useModal } from '@/hooks/useModal';
 import useMutation from '@/hooks/useMutation';
 import { useResponsiveValue } from '@/hooks/useResponsiveValue';
 import useUserContext from '@/hooks/useUserContext';
-import { deleteCard, updateCard, type UpdateCardType } from '@/lib/apis/cards';
+import { deleteCard } from '@/lib/apis/cards';
 import type { CardDetailResponse, CardEditFormValue } from '@/types/card';
 import type { ColumnsResponse } from '@/types/column';
 import type { CommentListResponse } from '@/types/comment';
@@ -74,15 +75,10 @@ export default function CardDetailModal({
     onSuccess: (_, deletedId) => onDeleteCard(deletedId),
   });
 
-  const updateCardMutation = useMutation<CardDetailResponse, { id: number; body: UpdateCardType }>({
-    mutationFn: ({ id, body }) => updateCard(id, body),
+  const updateCardMutation = useUpdateCard({
     onSuccess: (updated) => {
-      if (!updated) {
-        return;
-      }
       onUpdateCard(updated);
-      cardDetailQuery.refetch();
-      editModal.handleModalClose();
+      editModal.handleModalCloseAll();
     },
   });
 

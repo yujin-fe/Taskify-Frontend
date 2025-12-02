@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import CreateButton from '@/components/dashboard/CreateButton';
 import ColumnCardList from '@/components/dashboard-detail/card/ColumnCardList';
@@ -33,6 +33,8 @@ export default function DashboardDetail() {
   const { dashboardId } = useParams<{ dashboardId: string }>();
   const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
   const [selectedColumn, setSelectedColumn] = useState<ColumnsData | null>(null);
+
+  const columnRefetchMap = useRef<Record<number, () => void>>({});
 
   // 컬럼 모달
   const createColumnModal = useModal(CREATE_COLUMN);
@@ -113,6 +115,19 @@ export default function DashboardDetail() {
     },
   });
 
+  const registerRefetch = useCallback((columnId: number, fn: () => void) => {
+    columnRefetchMap.current[columnId] = fn;
+  }, []);
+
+  const handleCardMoved = (fromColumnId: number, toColumnId: number) => {
+    if (fromColumnId === toColumnId) {
+      return;
+    }
+
+    columnRefetchMap.current[fromColumnId]?.();
+    columnRefetchMap.current[toColumnId]?.();
+  };
+
   if (!dashboardId) {
     // TODO: 나중에 404 페이지로 리턴
     return <div>유효하지 않은 대시보드입니다.</div>;
@@ -189,6 +204,8 @@ export default function DashboardDetail() {
                   updateColumnMutation.reset();
                   changeColumnModal.handleModalOpen();
                 }}
+                onRegisterRefetch={registerRefetch}
+                onCardMoved={handleCardMoved}
               />
             </ColumnContainer>
           ))}

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import CreateButton from '@/components/dashboard/CreateButton';
 import DashboardCard from '@/components/dashboard-detail/card/DashboardCard';
 import ColumnInfoHeader from '@/components/dashboard-detail/column/ColumnInfoHeader';
@@ -20,6 +21,8 @@ interface ColumnCardListProps {
   dashboardId: string;
   memberData: MembersResponse | null;
   onHeaderClick: () => void;
+  onRegisterRefetch: (columnId: number, fn: () => void) => void;
+  onCardMoved: (fromColumnId: number, toColumnId: number) => void;
 }
 
 const CARD_LIST_SIZE = 5;
@@ -30,6 +33,8 @@ export default function ColumnCardList({
   memberData,
   onHeaderClick,
   columnListData,
+  onRegisterRefetch,
+  onCardMoved,
 }: ColumnCardListProps) {
   const { userProfile } = useUserContext();
   const CREATE_MODAL_NAME = `CREATE_CARD_${column.id}`;
@@ -41,6 +46,7 @@ export default function ColumnCardList({
     isLoading,
     error,
     lastItemRef,
+    resetData,
   } = useInfiniteScroll<CardsResponse, { size: number; columnId: number }>({
     fetchFn: (params) => getCardListData(params),
     params: { size: CARD_LIST_SIZE, columnId: column.id },
@@ -55,6 +61,10 @@ export default function ColumnCardList({
       };
     },
   });
+
+  useEffect(() => {
+    onRegisterRefetch(column.id, resetData);
+  }, [column.id, onRegisterRefetch, resetData]);
 
   const createCardMutation = useMutation({
     mutationFn: (reqBody: CreateCardType) => createCard(reqBody),
@@ -107,17 +117,40 @@ export default function ColumnCardList({
     );
     await createCardMutation.mutate(reqBody);
   };
-
   const handleUpdateCard = (updated: CardDetailResponse) => {
+    let fromColumnId: number | null = null;
+    let toColumnId: number | null = null;
+
     infiniteSetData((prev) => {
       if (!prev) {
         return prev;
       }
 
-      const newCards = prev.cards.map((c) => (c.id === updated.id ? updated : c));
+      const oldCard = prev.cards.find((c) => c.id === updated.id);
+      if (!oldCard) {
+        return prev;
+      }
 
-      return { ...prev, cards: newCards };
+      if (oldCard.columnId === updated.columnId) {
+        return {
+          ...prev,
+          cards: prev.cards.map((c) => (c.id === updated.id ? updated : c)),
+        };
+      }
+
+      fromColumnId = oldCard.columnId;
+      toColumnId = updated.columnId;
+
+      return {
+        ...prev,
+        cards: prev.cards.filter((c) => c.id !== updated.id),
+        totalCount: prev.totalCount - 1,
+      };
     });
+
+    if (fromColumnId !== null && toColumnId !== null) {
+      onCardMoved(fromColumnId, toColumnId);
+    }
   };
 
   const handleDeleteCard = (cardId: number) => {
