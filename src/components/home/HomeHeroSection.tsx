@@ -5,8 +5,18 @@ import Title from '@/components/common/Title';
 
 export default function HomeHeroSection() {
   return (
-    <section className='flex flex-col items-center gap-12 px-[40px]'>
-      <img src={images.mainVisual} className='w-full lg:w-[722px]' alt='' />
+    <section className='flex flex-col items-center gap-12'>
+      <div className='flex w-full justify-center px-[40px]'>
+        <div className='w-full max-w-[722px] overflow-hidden rounded-lg'>
+          <img
+            src={images.mainVisual}
+            width={722}
+            height={423}
+            className='h-auto w-full object-cover'
+            alt=''
+          />
+        </div>
+      </div>
       <Title
         className='flex flex-col items-center gap-1.5 text-[40px] leading-[48px] tracking-[-2px] whitespace-nowrap text-gray-0 md:flex-row md:gap-6 md:text-[56px] md:leading-[100px] lg:gap-7 lg:text-[76px]'
         weight={'bold'}>

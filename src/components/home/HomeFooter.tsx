@@ -25,9 +25,8 @@ export default function HomeFooter() {
         </a>
       </div>
       <div className='mt-[36px] flex justify-end gap-[16px] md:mt-0 md:basis-[145px]'>
-        {/* TODO: 시연 영상 제작 후 링크 변경 */}
         <a
-          href='https://www.youtube.com/'
+          href='https://www.youtube.com/watch?v=6mZkO7UfjLE'
           target='_blank'
           aria-label='시연영상 보러가기'
           rel='noreferrer'>
