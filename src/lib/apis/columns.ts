@@ -6,7 +6,12 @@ export interface CreateColumnType {
   dashboardId: number;
 }
 
-export interface ChangeColumnType {
+export interface UpdateColumnVariables {
+  columnId: number;
+  body: UpdateColumnType;
+}
+
+export interface UpdateColumnType {
   title: string;
 }
 
@@ -23,7 +28,7 @@ export const createColumn = async (reqBody: CreateColumnType) => {
 };
 
 /** 컬럼 수정 api */
-export const changeColumn = async (columnId: number, reqBody: ChangeColumnType) => {
+export const updateColumn = async (columnId: number, reqBody: UpdateColumnType) => {
   const res = await api.put(`/columns/${columnId}`, reqBody);
   return res;
 };

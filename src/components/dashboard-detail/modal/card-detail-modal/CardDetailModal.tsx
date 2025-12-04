@@ -7,13 +7,13 @@ import ChangeCardModal from '@/components/dashboard-detail/modal/ChangeCardModal
 import useCardDetail from '@/hooks/dashboard-detail/useCardDetail';
 import useCommentActions from '@/hooks/dashboard-detail/useCommentActions';
 import useUpdateCard from '@/hooks/dashboard-detail/useUpdateCard';
+import { useColumnListContext } from '@/hooks/useColumnListContext';
 import { useModal } from '@/hooks/useModal';
 import useMutation from '@/hooks/useMutation';
 import { useResponsiveValue } from '@/hooks/useResponsiveValue';
 import useUserContext from '@/hooks/useUserContext';
 import { deleteCard } from '@/lib/apis/cards';
 import type { CardDetailResponse, CardEditFormValue } from '@/types/card';
-import type { ColumnsResponse } from '@/types/column';
 import type { CommentListResponse } from '@/types/comment';
 import type { InfiniteScrollReturn } from '@/types/infiniteScroll';
 import type { MembersResponse } from '@/types/members';
@@ -42,7 +42,6 @@ interface CardDetailModalProps {
   onDeleteCard: (id: number) => void;
   onUpdateCard: (updated: CardDetailResponse) => void;
   memberData: MembersResponse;
-  columnListData: ColumnsResponse | null;
 }
 
 export default function CardDetailModal({
@@ -53,7 +52,6 @@ export default function CardDetailModal({
   onDeleteCard,
   onUpdateCard,
   memberData,
-  columnListData,
 }: CardDetailModalProps) {
   const { dashboardId } = useParams();
   const { userProfile } = useUserContext();
@@ -63,6 +61,7 @@ export default function CardDetailModal({
   const detailModal = useModal(`cardDetail_${cardId}`);
 
   const cardDetailQuery = useCardDetail(cardId);
+  const { columnList } = useColumnListContext();
   const { commentList, submitComment, updateComment, deleteComment } = useCommentActions(
     cardId,
     columnId,
@@ -127,7 +126,7 @@ export default function CardDetailModal({
 
   const currentColumnId = cardDetailQuery.data?.columnId ?? columnId;
   const currentColumnTitle =
-    columnListData?.data.find((col) => col.id === currentColumnId)?.title ?? columnTitle;
+    columnList.find((col) => col.id === currentColumnId)?.title ?? columnTitle;
 
   return (
     <>
@@ -171,7 +170,6 @@ export default function CardDetailModal({
         <ChangeCardModal
           modalName={`editCard_${cardId}`}
           memberData={memberData}
-          columnListData={columnListData}
           initialValue={{
             columnId,
             assigneeUser: cardDetailQuery.data.assignee,

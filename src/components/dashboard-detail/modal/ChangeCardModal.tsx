@@ -13,16 +13,15 @@ import Combobox, {
 import CardStatusBadge from '@/components/dashboard-detail/card/CardStatusBadge';
 import TagInput from '@/components/dashboard-detail/modal/TagInput';
 import { DUE_DATE, IMAGE_URL } from '@/constants/requestCardData';
+import { useColumnListContext } from '@/hooks/useColumnListContext';
 import { useModal } from '@/hooks/useModal';
 import type { CardEditFormValue } from '@/types/card';
-import type { ColumnsResponse } from '@/types/column';
 import type { MembersResponse } from '@/types/members';
 
 interface ChangeCardModalProps {
   memberData: MembersResponse;
   modalName: string;
   initialValue: CardEditFormValue;
-  columnListData: ColumnsResponse | null;
   serverErrorMessage: string | null;
   onSubmit: (formValue: CardEditFormValue, imageFile: File | null) => Promise<void>;
 }
@@ -31,11 +30,11 @@ export default function ChangeCardModal({
   memberData,
   modalName,
   initialValue,
-  columnListData,
   serverErrorMessage,
   onSubmit,
 }: ChangeCardModalProps) {
   const { handleModalClose } = useModal(modalName);
+  const { columnList } = useColumnListContext();
   const [formValue, setFormValue] = useState(initialValue);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [defaultImageUrl, setDefaultImageUrl] = useState<string | null>(initialValue.imageUrl);
@@ -93,7 +92,7 @@ export default function ChangeCardModal({
     }
   };
 
-  if (!columnListData) {
+  if (!columnList) {
     return null;
   }
 
@@ -111,14 +110,14 @@ export default function ChangeCardModal({
                 <Combobox
                   id='columnId'
                   value={
-                    columnListData.data
+                    columnList
                       .map((col) => ({ id: col.id, title: col.title }))
                       .find((col) => col.id === formValue.columnId) ?? null
                   }
                   setValue={(value) => handleComboboxChange('columnId', value)}>
                   <Combobox.Trigger name='컬럼' placeholder='컬럼 선택' />
                   <Combobox.List>
-                    {columnListData.data.map((col) => (
+                    {columnList.map((col) => (
                       <Combobox.Item key={col.id} value={{ id: col.id, title: col.title }}>
                         <CardStatusBadge title={col.title} />
                       </Combobox.Item>

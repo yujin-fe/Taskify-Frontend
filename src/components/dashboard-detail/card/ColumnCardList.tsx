@@ -10,14 +10,13 @@ import useMutation from '@/hooks/useMutation';
 import useUserContext from '@/hooks/useUserContext';
 import { createCard, getCardListData, type CreateCardType } from '@/lib/apis/cards';
 import type { CardDetailResponse, CardInitialValueType, CardsResponse } from '@/types/card';
-import type { ColumnsData, ColumnsResponse } from '@/types/column';
+import type { ColumnsData } from '@/types/column';
 import type { MembersResponse } from '@/types/members';
 import { createCardRequestBody } from '@/utils/card/createCardRequestBody';
 import { uploadCardImage } from '@/utils/card/uploadCardImage';
 
 interface ColumnCardListProps {
   column: ColumnsData;
-  columnListData: ColumnsResponse | null;
   dashboardId: string;
   memberData: MembersResponse | null;
   onHeaderClick: () => void;
@@ -32,7 +31,6 @@ export default function ColumnCardList({
   dashboardId,
   memberData,
   onHeaderClick,
-  columnListData,
   onRegisterRefetch,
   onCardMoved,
 }: ColumnCardListProps) {
@@ -84,24 +82,6 @@ export default function ColumnCardList({
     },
   });
 
-  if (isLoading && !infiniteData) {
-    return (
-      <div className='flex flex-col gap-[16px]'>
-        <Skeleton className='mb-[8px] h-[24px] w-[120px] rounded' />
-        <Skeleton className='flex flex-col overflow-hidden rounded-[6px] p-[18px] pb-[6px] select-none sm:flex-row sm:items-center sm:px-[20px] sm:py-[16px] md:max-w-[314px] md:flex-col md:items-start' />
-      </div>
-    );
-  }
-
-  if (!infiniteData || !memberData) {
-    return null;
-  }
-
-  // TODO: 오류 컴포넌트 구현
-  if (error) {
-    return <div>오류가 발생했습니다.</div>;
-  }
-
   // card handler
   const handleSubmitCreateCard = async (
     formValue: CardInitialValueType,
@@ -117,6 +97,7 @@ export default function ColumnCardList({
     );
     await createCardMutation.mutate(reqBody);
   };
+
   const handleUpdateCard = (updated: CardDetailResponse) => {
     let fromColumnId: number | null = null;
     let toColumnId: number | null = null;
@@ -166,6 +147,24 @@ export default function ColumnCardList({
     });
   };
 
+  if (isLoading && !infiniteData) {
+    return (
+      <div className='flex flex-col gap-[16px]'>
+        <Skeleton className='mb-[8px] h-[24px] w-[120px] rounded' />
+        <Skeleton className='flex flex-col overflow-hidden rounded-[6px] p-[18px] pb-[6px] select-none sm:flex-row sm:items-center sm:px-[20px] sm:py-[16px] md:max-w-[314px] md:flex-col md:items-start' />
+      </div>
+    );
+  }
+
+  if (!infiniteData || !memberData) {
+    return null;
+  }
+
+  // TODO: 오류 컴포넌트 구현
+  if (error) {
+    return <div>오류가 발생했습니다.</div>;
+  }
+
   const { cards, totalCount } = infiniteData;
 
   return (
@@ -190,13 +189,11 @@ export default function ColumnCardList({
                 onDeleteCard={() => handleDeleteCard(card.id)}
                 onUpdateCard={handleUpdateCard}
                 memberData={memberData}
-                columnListData={columnListData}
               />
             </li>
           );
         })}
       </ul>
-
       {/* 할 일 생성 모달 */}
       {createCardModal.isOpen && (
         <CreateCardModal
